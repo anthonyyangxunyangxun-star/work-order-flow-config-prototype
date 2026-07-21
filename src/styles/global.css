@@ -1,0 +1,17 @@
+/* 全局页面骨架样式 — Skill 不应修改本文件 */
+
+.app-content {
+  margin-top: 48px;
+  min-height: calc(100vh - 48px);
+  background-color: var(--gray-100);
+}
+
+/* 面向客户的页面：在外层加 .app-content--branded 即可启用品牌背景图 */
+.app-content--branded {
+  background-image: url('@/assets/backgrounds.png');
+  background-size: cover;
+  background-position: top right;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-color: var(--blue-50);
+}

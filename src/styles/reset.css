@@ -1,0 +1,10 @@
+/* meri-plus 必需的 reset，不要删除 */
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
+html, body, #app {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}

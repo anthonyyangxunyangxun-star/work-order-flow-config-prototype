@@ -1,4 +1,5 @@
 import { computed, ref } from 'vue'
+import { fixedUiEn } from './fixedUiEn.js'
 
 export const LOCALE_STORAGE_KEY = 'work-order-ui-locale'
 
@@ -19,7 +20,9 @@ const messages = {
       configCenter: '配置中心',
       workOrderConfig: '工作单据配置',
       workflowConfig: '工作流程配置',
-      workOrderManagement: '工作单据管理'
+      workOrderManagement: '工作单据管理',
+      documentCenter: '单据中心',
+      workOrderDetail: '工作单据详情'
     },
     classification: {
       title: '工作单据配置',
@@ -67,7 +70,9 @@ const messages = {
       configCenter: 'Configuration Center',
       workOrderConfig: 'Work Order Configuration',
       workflowConfig: 'Workflow Configuration',
-      workOrderManagement: 'Work Order Management'
+      workOrderManagement: 'Work Order Management',
+      documentCenter: 'Work Order Center',
+      workOrderDetail: 'Work Order Details'
     },
     classification: {
       title: 'Work Order Configuration',
@@ -122,9 +127,36 @@ function resolveMessage(key) {
 function t(key, params = {}) {
   const message = resolveMessage(key)
   if (typeof message !== 'string') return key
+  return formatMessage(message, params)
+}
+
+function formatMessage(message, params = {}) {
+  if (typeof message !== 'string') return message ?? ''
   return message.replace(/\{(\w+)\}/g, (placeholder, name) => (
     Object.prototype.hasOwnProperty.call(params, name) ? String(params[name]) : placeholder
   ))
+}
+
+function tx(sourceText, params = {}) {
+  if (typeof sourceText !== 'string') return sourceText ?? ''
+  const message = locale.value === 'en-US' ? fixedUiEn[sourceText] || sourceText : sourceText
+  return formatMessage(message, params)
+}
+
+function localizeColumns(columns = []) {
+  return columns.map(column => ({
+    ...column,
+    title: typeof column.title === 'string' ? tx(column.title) : column.title,
+    children: Array.isArray(column.children) ? localizeColumns(column.children) : column.children
+  }))
+}
+
+function localizeOptions(options = []) {
+  return options.map(option => ({
+    ...option,
+    label: typeof option.label === 'string' ? tx(option.label) : option.label,
+    name: typeof option.name === 'string' ? tx(option.name) : option.name
+  }))
 }
 
 function applyLocale(nextLocale) {
@@ -150,6 +182,9 @@ export function useLocale() {
     locale,
     isEnglish,
     t,
+    tx,
+    localizeColumns,
+    localizeOptions,
     setLocale: applyLocale,
     toggleLocale
   }

@@ -2,25 +2,25 @@
   <main class="detail-page">
     <section class="detail-header">
       <div class="detail-title-group">
-        <m-button type="link" @click="goBack">返回列表</m-button>
+        <m-button type="link" @click="goBack">{{ tx('返回列表') }}</m-button>
         <div>
           <h2 class="page-title">{{ order.title }}</h2>
           <p>{{ order.orderNo }} · {{ workTypeLabel(order.workType) }} · {{ order.classification }}</p>
         </div>
       </div>
       <div v-if="isWorkRecordDetail" class="detail-actions">
-        <m-button type="default" @click="handleMoreAction">作废</m-button>
-        <m-button type="default" @click="handleMoreAction">终止</m-button>
-        <m-dropdown model-value="" :options="recordMoreOptions" text="更多" trigger="click" @optionClick="handleMoreAction" />
+        <m-button type="default" @click="handleMoreAction">{{ tx('作废') }}</m-button>
+        <m-button type="default" @click="handleMoreAction">{{ tx('终止') }}</m-button>
+        <m-dropdown model-value="" :options="localizeOptions(recordMoreOptions)" :text="tx('更多')" trigger="click" @optionClick="handleMoreAction" />
       </div>
       <div v-else class="detail-actions">
-        <m-dropdown model-value="" :options="moreOptions" text="更多" trigger="click" @optionClick="handleMoreAction" />
+        <m-dropdown model-value="" :options="localizeOptions(moreOptions)" :text="tx('更多')" trigger="click" @optionClick="handleMoreAction" />
       </div>
     </section>
 
     <section v-if="!isWorkRecordDetail" class="detail-summary">
       <article v-for="item in summaryItems" :key="item.label">
-        <span>{{ item.label }}</span>
+        <span>{{ tx(item.label) }}</span>
         <strong>{{ item.value }}</strong>
       </article>
     </section>
@@ -31,75 +31,75 @@
           <div class="inspection-page-body">
             <div class="inspection-overview">
               <section class="inspection-block inspection-block--base">
-                <SectionTitle title="基础信息" />
+                <SectionTitle :title="tx('基础信息')" />
                 <div class="inspection-info-grid">
                   <article v-for="item in recordSummaryFields" :key="item.label">
-                    <span>{{ item.label }}</span>
+                    <span>{{ tx(item.label) }}</span>
                     <strong>{{ item.value }}</strong>
                   </article>
                 </div>
               </section>
 
               <section class="inspection-block">
-                <SectionTitle title="当前进展" />
+                <SectionTitle :title="tx('当前进展')" />
                 <div class="metric-strip">
                   <article v-for="metric in recordProgressMetrics" :key="metric.label" :class="`metric-card metric-card--${metric.tone}`">
-                    <span>{{ metric.label }}</span>
-                    <strong>{{ metric.value }}</strong>
-                    <em>{{ metric.note }}</em>
+                    <span>{{ tx(metric.label) }}</span>
+                    <strong>{{ tx(metric.value) }}</strong>
+                    <em>{{ tx(metric.note) }}</em>
                   </article>
                 </div>
               </section>
             </div>
 
             <section class="inspection-block inspection-tab-panel">
-              <m-tabs v-model="recordTab" :data="recordTabs" size="large" />
+              <m-tabs v-model="recordTab" :data="localizeOptions(recordTabs)" size="large" />
 
               <div v-if="isEngineeringChangeDetail && activeRecordTab === 'demand'" class="inspection-tab-body">
                 <div class="execution-section-stack">
                   <section class="inspection-subsection inspection-subsection--no-top">
                     <div class="inspection-subsection-head">
-                      <strong>需求来源信息</strong>
-                      <span>展示改造需求来源、申请人和上游关联单据。</span>
+                      <strong>{{ tx('需求来源信息') }}</strong>
+                      <span>{{ tx('展示改造需求来源、申请人和上游关联单据。') }}</span>
                     </div>
                     <div class="inspection-info-grid inspection-info-grid--compact">
                       <article v-for="item in engineeringDemandSourceFields" :key="item.label">
-                        <span>{{ item.label }}</span>
+                        <span>{{ tx(item.label) }}</span>
                         <strong>{{ item.value }}</strong>
                       </article>
                     </div>
                   </section>
                   <section class="inspection-subsection">
                     <div class="inspection-subsection-head">
-                      <strong>改造对象信息</strong>
-                      <span>按规格书只保留改造对象和改造范围，不再单独放空间/设备位置摘要。</span>
+                      <strong>{{ tx('改造对象信息') }}</strong>
+                      <span>{{ tx('按规格书只保留改造对象和改造范围，不再单独放空间/设备位置摘要。') }}</span>
                     </div>
                     <div class="inspection-info-grid inspection-info-grid--compact">
                       <article v-for="item in engineeringTargetFields" :key="item.label">
-                        <span>{{ item.label }}</span>
+                        <span>{{ tx(item.label) }}</span>
                         <strong>{{ item.value }}</strong>
                       </article>
                     </div>
                   </section>
                   <section class="inspection-subsection">
                     <div class="inspection-subsection-head">
-                      <strong>需求描述</strong>
-                      <span>现状问题、改造目标和期望完成时间。</span>
+                      <strong>{{ tx('需求描述') }}</strong>
+                      <span>{{ tx('现状问题、改造目标和期望完成时间。') }}</span>
                     </div>
                     <div class="inspection-info-grid inspection-info-grid--compact inspection-info-grid--wide">
                       <article v-for="item in engineeringDemandDescFields" :key="item.label">
-                        <span>{{ item.label }}</span>
+                        <span>{{ tx(item.label) }}</span>
                         <strong>{{ item.value }}</strong>
                       </article>
                     </div>
                   </section>
                   <section class="inspection-subsection">
                     <div class="inspection-subsection-head">
-                      <strong>附件</strong>
-                      <span>需求相关附件。</span>
+                      <strong>{{ tx('附件') }}</strong>
+                      <span>{{ tx('需求相关附件。') }}</span>
                     </div>
                     <div class="table-wrap">
-                      <m-table :columns="engineeringAttachmentColumns" :dataSource="engineeringDetail.demand.attachments" rowKey="id" evenColor />
+                      <m-table :columns="localizeColumns(engineeringAttachmentColumns)" :dataSource="engineeringDetail.demand.attachments" rowKey="id" evenColor />
                     </div>
                   </section>
                 </div>
@@ -109,49 +109,49 @@
                 <div class="execution-section-stack">
                   <section class="inspection-subsection inspection-subsection--no-top">
                     <div class="inspection-subsection-head">
-                      <strong>勘查信息</strong>
-                      <span>若节点未启用，前端展示未启用状态。</span>
+                      <strong>{{ tx('勘查信息') }}</strong>
+                      <span>{{ tx('若节点未启用，前端展示未启用状态。') }}</span>
                     </div>
                     <div v-if="engineeringDetail.survey.enabled" class="inspection-info-grid inspection-info-grid--compact">
                       <article v-for="item in engineeringSurveyFields" :key="item.label">
-                        <span>{{ item.label }}</span>
+                        <span>{{ tx(item.label) }}</span>
                         <strong>{{ item.value }}</strong>
                       </article>
                     </div>
-                    <div v-else class="state-inline">本单未启用现场勘查</div>
+                    <div v-else class="state-inline">{{ tx('本单未启用现场勘查') }}</div>
                   </section>
                   <template v-if="engineeringDetail.survey.enabled">
                     <section class="inspection-subsection">
                       <div class="inspection-subsection-head">
-                        <strong>影响评估</strong>
-                        <span>影响范围、系统、区域和商户。</span>
+                        <strong>{{ tx('影响评估') }}</strong>
+                        <span>{{ tx('影响范围、系统、区域和商户。') }}</span>
                       </div>
                       <div class="inspection-info-grid inspection-info-grid--compact">
                         <article v-for="item in engineeringImpactFields" :key="item.label">
-                          <span>{{ item.label }}</span>
+                          <span>{{ tx(item.label) }}</span>
                           <strong>{{ item.value }}</strong>
                         </article>
                       </div>
                     </section>
                     <section class="inspection-subsection">
                       <div class="inspection-subsection-head">
-                        <strong>风险评估</strong>
-                        <span>施工安全、停机断电和施工限制。</span>
+                        <strong>{{ tx('风险评估') }}</strong>
+                        <span>{{ tx('施工安全、停机断电和施工限制。') }}</span>
                       </div>
                       <div class="inspection-info-grid inspection-info-grid--compact inspection-info-grid--wide">
                         <article v-for="item in engineeringRiskFields" :key="item.label">
-                          <span>{{ item.label }}</span>
+                          <span>{{ tx(item.label) }}</span>
                           <strong>{{ item.value }}</strong>
                         </article>
                       </div>
                     </section>
                     <section class="inspection-subsection">
                       <div class="inspection-subsection-head">
-                        <strong>现场照片</strong>
-                        <span>现场勘查照片列表。</span>
+                        <strong>{{ tx('现场照片') }}</strong>
+                        <span>{{ tx('现场勘查照片列表。') }}</span>
                       </div>
                       <div class="table-wrap">
-                        <m-table :columns="engineeringPhotoColumns" :dataSource="engineeringDetail.survey.photos" rowKey="id" evenColor>
+                        <m-table :columns="localizeColumns(engineeringPhotoColumns)" :dataSource="engineeringDetail.survey.photos" rowKey="id" evenColor>
                           <template #photo="row">
                             <div class="thumbnail-list">
                               <div class="photo-thumb">
@@ -165,12 +165,12 @@
                     </section>
                     <section class="inspection-subsection">
                       <div class="inspection-subsection-head">
-                        <strong>评估结论</strong>
-                        <span>是否具备施工条件。</span>
+                        <strong>{{ tx('评估结论') }}</strong>
+                        <span>{{ tx('是否具备施工条件。') }}</span>
                       </div>
                       <div class="inspection-info-grid inspection-info-grid--compact">
                         <article v-for="item in engineeringSurveyConclusionFields" :key="item.label">
-                          <span>{{ item.label }}</span>
+                          <span>{{ tx(item.label) }}</span>
                           <strong>{{ item.value }}</strong>
                         </article>
                       </div>
@@ -183,72 +183,72 @@
                 <div class="execution-section-stack">
                   <section class="inspection-subsection inspection-subsection--no-top">
                     <div class="inspection-subsection-head">
-                      <strong>方案基础信息</strong>
-                      <span>方案名称、概述、版本和审批状态。</span>
+                      <strong>{{ tx('方案基础信息') }}</strong>
+                      <span>{{ tx('方案名称、概述、版本和审批状态。') }}</span>
                     </div>
                     <div class="inspection-info-grid inspection-info-grid--compact">
                       <article v-for="item in engineeringPlanBaseFields" :key="item.label">
-                        <span>{{ item.label }}</span>
+                        <span>{{ tx(item.label) }}</span>
                         <strong>{{ item.value }}</strong>
                       </article>
                     </div>
                   </section>
                   <section class="inspection-subsection">
                     <div class="inspection-subsection-head">
-                      <strong>时间要求</strong>
-                      <span>计划时间和可施工窗口。</span>
+                      <strong>{{ tx('时间要求') }}</strong>
+                      <span>{{ tx('计划时间和可施工窗口。') }}</span>
                     </div>
                     <div class="inspection-info-grid inspection-info-grid--compact">
                       <article v-for="item in engineeringPlanTimeFields" :key="item.label">
-                        <span>{{ item.label }}</span>
+                        <span>{{ tx(item.label) }}</span>
                         <strong>{{ item.value }}</strong>
                       </article>
                     </div>
                   </section>
                   <section class="inspection-subsection">
                     <div class="inspection-subsection-head">
-                      <strong>事项列表</strong>
-                      <span>每个事项包含事项描述、事项说明和执行对象。</span>
+                      <strong>{{ tx('事项列表') }}</strong>
+                      <span>{{ tx('每个事项包含事项描述、事项说明和执行对象。') }}</span>
                     </div>
                     <div class="table-wrap">
-                      <m-table :columns="engineeringPlanItemColumns" :dataSource="engineeringDetail.plan.items" rowKey="id" evenColor>
+                      <m-table :columns="localizeColumns(engineeringPlanItemColumns)" :dataSource="engineeringDetail.plan.items" rowKey="id" evenColor>
                         <template #executionObjects="row">
-                          <m-button type="link" size="small" @click="openStrategyObjects(row)">{{ row.objectCount }} 个对象</m-button>
+                          <m-button type="link" size="small" @click="openStrategyObjects(row)">{{ tx('{count} 个对象', { count: row.objectCount }) }}</m-button>
                         </template>
                       </m-table>
                     </div>
                   </section>
                   <section class="inspection-subsection">
                     <div class="inspection-subsection-head">
-                      <strong>预算摘要</strong>
-                      <span>详细成本计划在成本页签查看。</span>
+                      <strong>{{ tx('预算摘要') }}</strong>
+                      <span>{{ tx('详细成本计划在成本页签查看。') }}</span>
                     </div>
                     <div class="cost-summary-grid cost-summary-grid--three">
                       <article v-for="item in engineeringPlanBudgetItems" :key="item.label" class="cost-summary-card">
-                        <span>{{ item.label }}</span>
+                        <span>{{ tx(item.label) }}</span>
                         <strong>{{ item.value }}</strong>
-                        <em>{{ item.note }}</em>
+                        <em>{{ tx(item.note) }}</em>
                       </article>
                     </div>
-                    <m-button type="link" @click="recordTab = 'cost'">查看成本明细</m-button>
+                    <m-button type="link" @click="recordTab = 'cost'">{{ tx('查看成本明细') }}</m-button>
                   </section>
                   <section class="inspection-subsection">
                     <div class="inspection-subsection-head">
-                      <strong>方案附件</strong>
-                      <span>方案、图纸、选型报告和现场照片包。</span>
+                      <strong>{{ tx('方案附件') }}</strong>
+                      <span>{{ tx('方案、图纸、选型报告和现场照片包。') }}</span>
                     </div>
                     <div class="table-wrap">
-                      <m-table :columns="engineeringAttachmentColumnsWithUploader" :dataSource="engineeringDetail.plan.attachments" rowKey="id" evenColor />
+                      <m-table :columns="localizeColumns(engineeringAttachmentColumnsWithUploader)" :dataSource="engineeringDetail.plan.attachments" rowKey="id" evenColor />
                     </div>
                   </section>
                   <section class="inspection-subsection">
                     <div class="inspection-subsection-head">
-                      <strong>安全措施与停机安排</strong>
-                      <span>施工前置要求和验收标准摘要。</span>
+                      <strong>{{ tx('安全措施与停机安排') }}</strong>
+                      <span>{{ tx('施工前置要求和验收标准摘要。') }}</span>
                     </div>
                     <div class="inspection-info-grid inspection-info-grid--compact inspection-info-grid--wide">
                       <article v-for="item in engineeringPlanSafetyFields" :key="item.label">
-                        <span>{{ item.label }}</span>
+                        <span>{{ tx(item.label) }}</span>
                         <strong>{{ item.value }}</strong>
                       </article>
                     </div>
@@ -260,41 +260,41 @@
                 <div class="execution-section-stack">
                   <section class="inspection-subsection inspection-subsection--no-top">
                     <div class="inspection-subsection-head">
-                      <strong>执行主体信息</strong>
-                      <span>人员、班组、供应商和实际工期。</span>
+                      <strong>{{ tx('执行主体信息') }}</strong>
+                      <span>{{ tx('人员、班组、供应商和实际工期。') }}</span>
                     </div>
                     <div class="inspection-info-grid inspection-info-grid--compact">
                       <article v-for="item in engineeringExecutionBaseFields" :key="item.label">
-                        <span>{{ item.label }}</span>
+                        <span>{{ tx(item.label) }}</span>
                         <strong>{{ item.value }}</strong>
                       </article>
                     </div>
                   </section>
                   <section class="inspection-subsection">
                     <div class="inspection-subsection-head">
-                      <strong>施工记录</strong>
-                      <span>按施工日期展示过程记录。</span>
+                      <strong>{{ tx('施工记录') }}</strong>
+                      <span>{{ tx('按施工日期展示过程记录。') }}</span>
                     </div>
                     <div class="table-wrap">
-                      <m-table :columns="engineeringConstructionRecordColumns" :dataSource="engineeringDetail.execution.constructionRecords" rowKey="id" evenColor />
+                      <m-table :columns="localizeColumns(engineeringConstructionRecordColumns)" :dataSource="engineeringDetail.execution.constructionRecords" rowKey="id" evenColor />
                     </div>
                   </section>
                   <section class="inspection-subsection">
                     <div class="inspection-subsection-head">
-                      <strong>进度记录</strong>
-                      <span>事项完成比例和总体进度。</span>
+                      <strong>{{ tx('进度记录') }}</strong>
+                      <span>{{ tx('事项完成比例和总体进度。') }}</span>
                     </div>
                     <div class="table-wrap">
-                      <m-table :columns="engineeringProgressRecordColumns" :dataSource="engineeringDetail.execution.progressRecords" rowKey="id" evenColor />
+                      <m-table :columns="localizeColumns(engineeringProgressRecordColumns)" :dataSource="engineeringDetail.execution.progressRecords" rowKey="id" evenColor />
                     </div>
                   </section>
                   <section class="inspection-subsection">
                     <div class="inspection-subsection-head">
-                      <strong>现场照片</strong>
-                      <span>施工前、中、后的照片留痕。</span>
+                      <strong>{{ tx('现场照片') }}</strong>
+                      <span>{{ tx('施工前、中、后的照片留痕。') }}</span>
                     </div>
                     <div class="table-wrap">
-                      <m-table :columns="engineeringConstructionPhotoColumns" :dataSource="engineeringDetail.execution.photos" rowKey="id" evenColor>
+                      <m-table :columns="localizeColumns(engineeringConstructionPhotoColumns)" :dataSource="engineeringDetail.execution.photos" rowKey="id" evenColor>
                         <template #photo="row">
                           <div class="thumbnail-list">
                             <div class="photo-thumb">
@@ -308,50 +308,50 @@
                   </section>
                   <section class="inspection-subsection">
                     <div class="inspection-subsection-head">
-                      <strong>问题记录</strong>
-                      <span>施工过程发现的问题和处理状态。</span>
+                      <strong>{{ tx('问题记录') }}</strong>
+                      <span>{{ tx('施工过程发现的问题和处理状态。') }}</span>
                     </div>
                     <div class="table-wrap">
-                      <m-table :columns="engineeringProblemColumns" :dataSource="engineeringDetail.execution.problemRecords" rowKey="id" evenColor>
+                      <m-table :columns="localizeColumns(engineeringProblemColumns)" :dataSource="engineeringDetail.execution.problemRecords" rowKey="id" evenColor>
                         <template #status="row">
-                          <m-tag :type="statusTextTagType(row.status)">{{ row.status }}</m-tag>
+                          <m-tag :type="statusTextTagType(row.status)">{{ tx(row.status) }}</m-tag>
                         </template>
                       </m-table>
                     </div>
                   </section>
                   <section class="inspection-subsection">
                     <div class="inspection-subsection-head">
-                      <strong>变更记录</strong>
-                      <span>方案变更内容、原因和审批结果。</span>
+                      <strong>{{ tx('变更记录') }}</strong>
+                      <span>{{ tx('方案变更内容、原因和审批结果。') }}</span>
                     </div>
                     <div class="table-wrap">
-                      <m-table :columns="engineeringChangeColumns" :dataSource="engineeringDetail.execution.changeRecords" rowKey="id" evenColor />
+                      <m-table :columns="localizeColumns(engineeringChangeColumns)" :dataSource="engineeringDetail.execution.changeRecords" rowKey="id" evenColor />
                     </div>
                   </section>
                   <section class="inspection-subsection">
                     <div class="inspection-subsection-head">
-                      <strong>安全措施执行情况</strong>
-                      <span>按安全措施逐项记录执行情况。</span>
+                      <strong>{{ tx('安全措施执行情况') }}</strong>
+                      <span>{{ tx('按安全措施逐项记录执行情况。') }}</span>
                     </div>
                     <div class="table-wrap">
-                      <m-table :columns="engineeringSafetyColumns" :dataSource="engineeringDetail.execution.safetyExecution" rowKey="id" evenColor>
+                      <m-table :columns="localizeColumns(engineeringSafetyColumns)" :dataSource="engineeringDetail.execution.safetyExecution" rowKey="id" evenColor>
                         <template #status="row">
-                          <m-tag :type="statusTextTagType(row.status)">{{ row.status }}</m-tag>
+                          <m-tag :type="statusTextTagType(row.status)">{{ tx(row.status) }}</m-tag>
                         </template>
                       </m-table>
                     </div>
                   </section>
                   <section class="inspection-subsection">
                     <div class="inspection-subsection-head">
-                      <strong>实际资源使用</strong>
-                      <span>实际人力、物料和机械使用。</span>
+                      <strong>{{ tx('实际资源使用') }}</strong>
+                      <span>{{ tx('实际人力、物料和机械使用。') }}</span>
                     </div>
                     <div class="inspection-table-grid inspection-table-grid--dual">
                       <div class="table-wrap">
-                        <m-table :columns="engineeringActualLaborColumns" :dataSource="engineeringDetail.execution.actualLabor" rowKey="id" evenColor />
+                        <m-table :columns="localizeColumns(engineeringActualLaborColumns)" :dataSource="engineeringDetail.execution.actualLabor" rowKey="id" evenColor />
                       </div>
                       <div class="table-wrap">
-                        <m-table :columns="engineeringActualMaterialColumns" :dataSource="engineeringDetail.execution.actualMaterial" rowKey="id" evenColor />
+                        <m-table :columns="localizeColumns(engineeringActualMaterialColumns)" :dataSource="engineeringDetail.execution.actualMaterial" rowKey="id" evenColor />
                       </div>
                     </div>
                   </section>
@@ -362,72 +362,72 @@
                 <div class="execution-section-stack">
                   <section class="inspection-subsection inspection-subsection--no-top">
                     <div class="inspection-subsection-head">
-                      <strong>验收信息</strong>
-                      <span>若验收节点未启用，展示未启用状态。</span>
+                      <strong>{{ tx('验收信息') }}</strong>
+                      <span>{{ tx('若验收节点未启用，展示未启用状态。') }}</span>
                     </div>
                     <div v-if="engineeringDetail.acceptance.enabled" class="inspection-info-grid inspection-info-grid--compact">
                       <article v-for="item in engineeringAcceptanceBaseFields" :key="item.label">
-                        <span>{{ item.label }}</span>
+                        <span>{{ tx(item.label) }}</span>
                         <strong>{{ item.value }}</strong>
                       </article>
                     </div>
-                    <div v-else class="state-inline">本单未启用改造验收</div>
+                    <div v-else class="state-inline">{{ tx('本单未启用改造验收') }}</div>
                   </section>
                   <template v-if="engineeringDetail.acceptance.enabled">
                     <section class="inspection-subsection">
                       <div class="inspection-subsection-head">
-                        <strong>验收标准</strong>
-                        <span>按标准项记录验收结果。</span>
+                        <strong>{{ tx('验收标准') }}</strong>
+                        <span>{{ tx('按标准项记录验收结果。') }}</span>
                       </div>
                       <div class="table-wrap">
-                        <m-table :columns="engineeringAcceptanceCriteriaColumns" :dataSource="engineeringDetail.acceptance.criteria" rowKey="id" evenColor>
+                        <m-table :columns="localizeColumns(engineeringAcceptanceCriteriaColumns)" :dataSource="engineeringDetail.acceptance.criteria" rowKey="id" evenColor>
                           <template #result="row">
-                            <m-tag :type="statusTextTagType(row.result)">{{ row.result }}</m-tag>
+                            <m-tag :type="statusTextTagType(row.result)">{{ tx(row.result) }}</m-tag>
                           </template>
                         </m-table>
                       </div>
                     </section>
                     <section class="inspection-subsection">
                       <div class="inspection-subsection-head">
-                        <strong>验收结论</strong>
-                        <span>整体验收结论和说明。</span>
+                        <strong>{{ tx('验收结论') }}</strong>
+                        <span>{{ tx('整体验收结论和说明。') }}</span>
                       </div>
                       <div class="inspection-info-grid inspection-info-grid--compact">
                         <article v-for="item in engineeringAcceptanceResultFields" :key="item.label">
-                          <span>{{ item.label }}</span>
+                          <span>{{ tx(item.label) }}</span>
                           <strong>{{ item.value }}</strong>
                         </article>
                       </div>
                     </section>
                     <section class="inspection-subsection">
                       <div class="inspection-subsection-head">
-                        <strong>整改要求</strong>
-                        <span>需要整改的事项、期限和责任人。</span>
+                        <strong>{{ tx('整改要求') }}</strong>
+                        <span>{{ tx('需要整改的事项、期限和责任人。') }}</span>
                       </div>
                       <div class="table-wrap">
-                        <m-table :columns="engineeringRectificationColumns" :dataSource="engineeringDetail.acceptance.rectificationRequirements" rowKey="id" evenColor>
+                        <m-table :columns="localizeColumns(engineeringRectificationColumns)" :dataSource="engineeringDetail.acceptance.rectificationRequirements" rowKey="id" evenColor>
                           <template #status="row">
-                            <m-tag :type="statusTextTagType(row.status)">{{ row.status }}</m-tag>
+                            <m-tag :type="statusTextTagType(row.status)">{{ tx(row.status) }}</m-tag>
                           </template>
                         </m-table>
                       </div>
                     </section>
                     <section class="inspection-subsection">
                       <div class="inspection-subsection-head">
-                        <strong>复验记录</strong>
-                        <span>整改后的复验结论。</span>
+                        <strong>{{ tx('复验记录') }}</strong>
+                        <span>{{ tx('整改后的复验结论。') }}</span>
                       </div>
                       <div class="table-wrap">
-                        <m-table :columns="engineeringRecheckColumns" :dataSource="engineeringDetail.acceptance.recheckRecords" rowKey="id" evenColor />
+                        <m-table :columns="localizeColumns(engineeringRecheckColumns)" :dataSource="engineeringDetail.acceptance.recheckRecords" rowKey="id" evenColor />
                       </div>
                     </section>
                     <section class="inspection-subsection">
                       <div class="inspection-subsection-head">
-                        <strong>验收照片</strong>
-                        <span>验收现场照片。</span>
+                        <strong>{{ tx('验收照片') }}</strong>
+                        <span>{{ tx('验收现场照片。') }}</span>
                       </div>
                       <div class="table-wrap">
-                        <m-table :columns="engineeringAcceptancePhotoColumns" :dataSource="engineeringDetail.acceptance.photos" rowKey="id" evenColor>
+                        <m-table :columns="localizeColumns(engineeringAcceptancePhotoColumns)" :dataSource="engineeringDetail.acceptance.photos" rowKey="id" evenColor>
                           <template #photo="row">
                             <div class="thumbnail-list">
                               <div class="photo-thumb photo-thumb--after">
@@ -441,11 +441,11 @@
                     </section>
                     <section class="inspection-subsection">
                       <div class="inspection-subsection-head">
-                        <strong>签字确认记录</strong>
-                        <span>签字人、角色、意见和电子签名。</span>
+                        <strong>{{ tx('签字确认记录') }}</strong>
+                        <span>{{ tx('签字人、角色、意见和电子签名。') }}</span>
                       </div>
                       <div class="table-wrap">
-                        <m-table :columns="engineeringSignatureColumns" :dataSource="engineeringDetail.acceptance.signatureRecords" rowKey="id" evenColor />
+                        <m-table :columns="localizeColumns(engineeringSignatureColumns)" :dataSource="engineeringDetail.acceptance.signatureRecords" rowKey="id" evenColor />
                       </div>
                     </section>
                   </template>
@@ -455,94 +455,94 @@
               <div v-else-if="isEngineeringChangeDetail && activeRecordTab === 'cost'" class="inspection-tab-body">
                 <div class="cost-summary-grid">
                   <article v-for="item in engineeringCostSummaryItems" :key="item.label" class="cost-summary-card">
-                    <span>{{ item.label }}</span>
+                    <span>{{ tx(item.label) }}</span>
                     <strong>{{ item.value }}</strong>
-                    <em>{{ item.note }}</em>
+                    <em>{{ tx(item.note) }}</em>
                   </article>
                 </div>
                 <div class="execution-section-stack">
                   <section class="inspection-subsection inspection-subsection--no-top">
                     <div class="inspection-subsection-head">
-                      <strong>成本汇总对比</strong>
-                      <span>按费用类别展示预算、实际、差异和差异原因。</span>
+                      <strong>{{ tx('成本汇总对比') }}</strong>
+                      <span>{{ tx('按费用类别展示预算、实际、差异和差异原因。') }}</span>
                     </div>
                     <div class="table-wrap">
-                      <m-table :columns="engineeringCostCategoryColumns" :dataSource="engineeringDetail.cost.categoryCosts" rowKey="id" evenColor />
+                      <m-table :columns="localizeColumns(engineeringCostCategoryColumns)" :dataSource="engineeringDetail.cost.categoryCosts" rowKey="id" evenColor />
                     </div>
                   </section>
                   <section class="inspection-subsection">
                     <div class="inspection-subsection-head">
-                      <strong>人力成本对比</strong>
-                      <span>计划工时和实际工时对比。</span>
+                      <strong>{{ tx('人力成本对比') }}</strong>
+                      <span>{{ tx('计划工时和实际工时对比。') }}</span>
                     </div>
                     <div class="table-wrap">
-                      <m-table :columns="engineeringLaborCostColumns" :dataSource="engineeringDetail.cost.laborCosts" rowKey="id" evenColor />
+                      <m-table :columns="localizeColumns(engineeringLaborCostColumns)" :dataSource="engineeringDetail.cost.laborCosts" rowKey="id" evenColor />
                     </div>
                   </section>
                   <section class="inspection-subsection">
                     <div class="inspection-subsection-head">
-                      <strong>物料成本对比</strong>
-                      <span>物料计划数量、实际数量和金额差异。</span>
+                      <strong>{{ tx('物料成本对比') }}</strong>
+                      <span>{{ tx('物料计划数量、实际数量和金额差异。') }}</span>
                     </div>
                     <div class="table-wrap">
-                      <m-table :columns="engineeringMaterialCostColumns" :dataSource="engineeringDetail.cost.materialCosts" rowKey="id" evenColor />
+                      <m-table :columns="localizeColumns(engineeringMaterialCostColumns)" :dataSource="engineeringDetail.cost.materialCosts" rowKey="id" evenColor />
                     </div>
                   </section>
                   <section class="inspection-subsection">
                     <div class="inspection-subsection-head">
-                      <strong>外委费用对比</strong>
-                      <span>供应商、合同和付款状态。</span>
+                      <strong>{{ tx('外委费用对比') }}</strong>
+                      <span>{{ tx('供应商、合同和付款状态。') }}</span>
                     </div>
                     <div class="table-wrap">
-                      <m-table :columns="engineeringOutsourcingCostColumns" :dataSource="engineeringDetail.cost.outsourcingFees" rowKey="id" evenColor />
+                      <m-table :columns="localizeColumns(engineeringOutsourcingCostColumns)" :dataSource="engineeringDetail.cost.outsourcingFees" rowKey="id" evenColor />
                     </div>
                   </section>
                   <section class="inspection-subsection">
                     <div class="inspection-subsection-head">
-                      <strong>其他费用对比</strong>
-                      <span>垃圾清运、成品保护等费用。</span>
+                      <strong>{{ tx('其他费用对比') }}</strong>
+                      <span>{{ tx('垃圾清运、成品保护等费用。') }}</span>
                     </div>
                     <div class="table-wrap">
-                      <m-table :columns="engineeringOtherFeeColumns" :dataSource="engineeringDetail.cost.otherFees" rowKey="id" evenColor />
+                      <m-table :columns="localizeColumns(engineeringOtherFeeColumns)" :dataSource="engineeringDetail.cost.otherFees" rowKey="id" evenColor />
                     </div>
                   </section>
                   <section class="inspection-subsection">
                     <div class="inspection-subsection-head">
-                      <strong>成本归集过程</strong>
-                      <span>物料领用记录和工时记录。</span>
+                      <strong>{{ tx('成本归集过程') }}</strong>
+                      <span>{{ tx('物料领用记录和工时记录。') }}</span>
                     </div>
                     <div class="inspection-table-grid inspection-table-grid--dual">
                       <div class="table-wrap">
-                        <m-table :columns="engineeringMaterialReqColumns" :dataSource="engineeringDetail.cost.materialRequests" rowKey="id" evenColor />
+                        <m-table :columns="localizeColumns(engineeringMaterialReqColumns)" :dataSource="engineeringDetail.cost.materialRequests" rowKey="id" evenColor />
                       </div>
                       <div class="table-wrap">
-                        <m-table :columns="engineeringWorkHourColumns" :dataSource="engineeringDetail.cost.workHourRecords" rowKey="id" evenColor />
+                        <m-table :columns="localizeColumns(engineeringWorkHourColumns)" :dataSource="engineeringDetail.cost.workHourRecords" rowKey="id" evenColor />
                       </div>
                     </div>
                   </section>
                   <section class="inspection-subsection">
                     <div class="inspection-subsection-head">
-                      <strong>合同与付款</strong>
-                      <span>外委合同、付款节点和发票状态。</span>
+                      <strong>{{ tx('合同与付款') }}</strong>
+                      <span>{{ tx('外委合同、付款节点和发票状态。') }}</span>
                     </div>
                     <div class="inspection-info-grid inspection-info-grid--compact">
                       <article v-for="item in engineeringContractFields" :key="item.label">
-                        <span>{{ item.label }}</span>
+                        <span>{{ tx(item.label) }}</span>
                         <strong>{{ item.value }}</strong>
                       </article>
                     </div>
                     <div class="table-wrap engineering-inline-table">
-                      <m-table :columns="engineeringPaymentColumns" :dataSource="engineeringDetail.cost.paymentMilestones" rowKey="id" evenColor />
+                      <m-table :columns="localizeColumns(engineeringPaymentColumns)" :dataSource="engineeringDetail.cost.paymentMilestones" rowKey="id" evenColor />
                     </div>
                   </section>
                   <section class="inspection-subsection">
                     <div class="inspection-subsection-head">
-                      <strong>结算状态</strong>
-                      <span>费用结算、成本归集和 ERP 同步状态。</span>
+                      <strong>{{ tx('结算状态') }}</strong>
+                      <span>{{ tx('费用结算、成本归集和 ERP 同步状态。') }}</span>
                     </div>
                     <div class="inspection-info-grid inspection-info-grid--compact">
                       <article v-for="item in engineeringSettlementFields" :key="item.label">
-                        <span>{{ item.label }}</span>
+                        <span>{{ tx(item.label) }}</span>
                         <strong>{{ item.value }}</strong>
                       </article>
                     </div>
@@ -554,83 +554,83 @@
                 <div class="execution-section-stack">
                   <section class="inspection-subsection inspection-subsection--no-top">
                     <div class="inspection-subsection-head">
-                      <strong>台账更新部分</strong>
-                      <span>{{ engineeringDetail.archive.ledgerEnabled ? '系统数据同步记录' : '无台账资料更新' }}</span>
+                      <strong>{{ tx('台账更新部分') }}</strong>
+                      <span>{{ tx(engineeringDetail.archive.ledgerEnabled ? '系统数据同步记录' : '无台账资料更新') }}</span>
                     </div>
                     <template v-if="engineeringDetail.archive.ledgerEnabled">
                       <div class="table-wrap">
-                        <m-table :columns="engineeringAffectedObjectColumns" :dataSource="engineeringDetail.archive.affectedObjects" rowKey="id" evenColor />
+                        <m-table :columns="localizeColumns(engineeringAffectedObjectColumns)" :dataSource="engineeringDetail.archive.affectedObjects" rowKey="id" evenColor />
                       </div>
                     </template>
-                    <div v-else class="state-inline">无台账资料更新</div>
+                    <div v-else class="state-inline">{{ tx('无台账资料更新') }}</div>
                   </section>
                   <template v-if="engineeringDetail.archive.ledgerEnabled">
                     <section class="inspection-subsection">
                       <div class="inspection-subsection-head">
-                        <strong>更新内容</strong>
-                        <span>更新前后内容对比。</span>
+                        <strong>{{ tx('更新内容') }}</strong>
+                        <span>{{ tx('更新前后内容对比。') }}</span>
                       </div>
                       <div class="table-wrap">
-                        <m-table :columns="engineeringUpdateContentColumns" :dataSource="engineeringDetail.archive.updateContents" rowKey="id" evenColor />
+                        <m-table :columns="localizeColumns(engineeringUpdateContentColumns)" :dataSource="engineeringDetail.archive.updateContents" rowKey="id" evenColor />
                       </div>
                     </section>
                     <section class="inspection-subsection">
                       <div class="inspection-subsection-head">
-                        <strong>更新信息</strong>
-                        <span>更新人、更新时间和结果。</span>
+                        <strong>{{ tx('更新信息') }}</strong>
+                        <span>{{ tx('更新人、更新时间和结果。') }}</span>
                       </div>
                       <div class="inspection-info-grid inspection-info-grid--compact">
                         <article v-for="item in engineeringUpdateFields" :key="item.label">
-                          <span>{{ item.label }}</span>
+                          <span>{{ tx(item.label) }}</span>
                           <strong>{{ item.value }}</strong>
                         </article>
                       </div>
                     </section>
                     <section class="inspection-subsection">
                       <div class="inspection-subsection-head">
-                        <strong>更新附件</strong>
-                        <span>台账更新相关附件。</span>
+                        <strong>{{ tx('更新附件') }}</strong>
+                        <span>{{ tx('台账更新相关附件。') }}</span>
                       </div>
                       <div class="table-wrap">
-                        <m-table :columns="engineeringUpdateAttachmentColumns" :dataSource="engineeringDetail.archive.updateAttachments" rowKey="id" evenColor />
+                        <m-table :columns="localizeColumns(engineeringUpdateAttachmentColumns)" :dataSource="engineeringDetail.archive.updateAttachments" rowKey="id" evenColor />
                       </div>
                     </section>
                   </template>
                   <section class="inspection-subsection">
                     <div class="inspection-subsection-head">
-                      <strong>竣工归档部分</strong>
-                      <span>{{ engineeringDetail.archive.archiveReady ? '竣工资料交付与存档' : '待验收通过后进入竣工归档' }}</span>
+                      <strong>{{ tx('竣工归档部分') }}</strong>
+                      <span>{{ tx(engineeringDetail.archive.archiveReady ? '竣工资料交付与存档' : '待验收通过后进入竣工归档') }}</span>
                     </div>
                     <div v-if="engineeringDetail.archive.archiveReady" class="table-wrap">
-                      <m-table :columns="engineeringArchiveDocColumns" :dataSource="engineeringDetail.archive.archiveDocs" rowKey="id" evenColor>
+                      <m-table :columns="localizeColumns(engineeringArchiveDocColumns)" :dataSource="engineeringDetail.archive.archiveDocs" rowKey="id" evenColor>
                         <template #archiveStatus="row">
-                          <m-tag :type="statusTextTagType(row.archiveStatus)">{{ row.archiveStatus }}</m-tag>
+                          <m-tag :type="statusTextTagType(row.archiveStatus)">{{ tx(row.archiveStatus) }}</m-tag>
                         </template>
                       </m-table>
                     </div>
-                    <div v-else class="state-inline">待验收通过后进入竣工归档</div>
+                    <div v-else class="state-inline">{{ tx('待验收通过后进入竣工归档') }}</div>
                   </section>
                   <template v-if="engineeringDetail.archive.archiveReady">
                     <section class="inspection-subsection">
                       <div class="inspection-subsection-head">
-                        <strong>归档移交记录</strong>
-                        <span>施工方移交和甲方接收信息。</span>
+                        <strong>{{ tx('归档移交记录') }}</strong>
+                        <span>{{ tx('施工方移交和甲方接收信息。') }}</span>
                       </div>
                       <div class="inspection-info-grid inspection-info-grid--compact">
                         <article v-for="item in engineeringHandoverFields" :key="item.label">
-                          <span>{{ item.label }}</span>
+                          <span>{{ tx(item.label) }}</span>
                           <strong>{{ item.value }}</strong>
                         </article>
                       </div>
                     </section>
                     <section class="inspection-subsection">
                       <div class="inspection-subsection-head">
-                        <strong>归档完整性</strong>
-                        <span>必归资料数量、完成率和缺失说明。</span>
+                        <strong>{{ tx('归档完整性') }}</strong>
+                        <span>{{ tx('必归资料数量、完成率和缺失说明。') }}</span>
                       </div>
                       <div class="inspection-info-grid inspection-info-grid--compact">
                         <article v-for="item in engineeringArchiveCompletenessFields" :key="item.label">
-                          <span>{{ item.label }}</span>
+                          <span>{{ tx(item.label) }}</span>
                           <strong>{{ item.value }}</strong>
                         </article>
                       </div>
@@ -642,13 +642,13 @@
               <div v-else-if="isEngineeringChangeDetail && activeRecordTab === 'flow'" class="inspection-tab-body">
                 <section class="inspection-subsection inspection-subsection--no-top">
                   <div class="inspection-subsection-head">
-                    <strong>流程节点列表</strong>
-                    <span>按工程改造流程配置展示节点轨迹。</span>
+                    <strong>{{ tx('流程节点列表') }}</strong>
+                    <span>{{ tx('按工程改造流程配置展示节点轨迹。') }}</span>
                   </div>
                   <div class="table-wrap">
-                    <m-table :columns="engineeringFlowColumns" :dataSource="engineeringDetail.workflowRecords" rowKey="id" evenColor>
+                    <m-table :columns="localizeColumns(engineeringFlowColumns)" :dataSource="engineeringDetail.workflowRecords" rowKey="id" evenColor>
                       <template #nodeStatus="row">
-                        <m-tag :type="statusTextTagType(row.nodeStatus)">{{ row.nodeStatus }}</m-tag>
+                        <m-tag :type="statusTextTagType(row.nodeStatus)">{{ tx(row.nodeStatus) }}</m-tag>
                       </template>
                     </m-table>
                   </div>
@@ -659,20 +659,20 @@
                 <div class="execution-section-stack">
                   <section class="inspection-subsection inspection-subsection--no-top">
                     <div class="inspection-subsection-head">
-                      <strong>故障来源与影响</strong>
-                      <span>承接报事、巡检、维保或人工创建来源，记录故障对象、现象和风险。</span>
+                      <strong>{{ tx('故障来源与影响') }}</strong>
+                      <span>{{ tx('承接报事、巡检、维保或人工创建来源，记录故障对象、现象和风险。') }}</span>
                     </div>
                     <div class="inspection-info-grid inspection-info-grid--compact">
                       <article v-for="item in repairFaultFields" :key="item.label">
-                        <span>{{ item.label }}</span>
+                        <span>{{ tx(item.label) }}</span>
                         <strong>{{ item.value }}</strong>
                       </article>
                     </div>
                   </section>
                   <section class="inspection-subsection">
                     <div class="inspection-subsection-head">
-                      <strong>故障照片</strong>
-                      <span>报事或应急维修来源建议保留现场照片。</span>
+                      <strong>{{ tx('故障照片') }}</strong>
+                      <span>{{ tx('报事或应急维修来源建议保留现场照片。') }}</span>
                     </div>
                     <div v-if="recordDetail.fault.photos?.length" class="thumbnail-list thumbnail-list--wide">
                       <div v-for="item in recordDetail.fault.photos" :key="item" class="photo-thumb">
@@ -680,7 +680,7 @@
                         <span>{{ item }}</span>
                       </div>
                     </div>
-                    <div v-else class="state-inline">暂无故障照片</div>
+                    <div v-else class="state-inline">{{ tx('暂无故障照片') }}</div>
                   </section>
                 </div>
               </div>
@@ -689,37 +689,37 @@
                 <div class="execution-section-stack">
                   <section class="inspection-subsection inspection-subsection--no-top">
                     <div class="inspection-subsection-head">
-                      <strong>异常核实</strong>
-                      <span>确认故障真实性、影响范围和紧急程度。</span>
+                      <strong>{{ tx('异常核实') }}</strong>
+                      <span>{{ tx('确认故障真实性、影响范围和紧急程度。') }}</span>
                     </div>
                     <div class="inspection-info-grid inspection-info-grid--compact">
                       <article v-for="item in repairVerifyFields" :key="item.label">
-                        <span>{{ item.label }}</span>
+                        <span>{{ tx(item.label) }}</span>
                         <strong>{{ item.value }}</strong>
                       </article>
                     </div>
                   </section>
                   <section class="inspection-subsection">
                     <div class="inspection-subsection-head">
-                      <strong>诊断排查</strong>
-                      <span>记录故障原因、处理路径、外委与待料判断。</span>
+                      <strong>{{ tx('诊断排查') }}</strong>
+                      <span>{{ tx('记录故障原因、处理路径、外委与待料判断。') }}</span>
                     </div>
                     <div class="inspection-info-grid inspection-info-grid--compact inspection-info-grid--wide">
                       <article v-for="item in repairDiagnosisFields" :key="item.label">
-                        <span>{{ item.label }}</span>
+                        <span>{{ tx(item.label) }}</span>
                         <strong>{{ item.value }}</strong>
                       </article>
                     </div>
                   </section>
                   <section class="inspection-subsection">
                     <div class="inspection-subsection-head">
-                      <strong>诊断附件</strong>
-                      <span>检测记录、仪表读数或排查照片。</span>
+                      <strong>{{ tx('诊断附件') }}</strong>
+                      <span>{{ tx('检测记录、仪表读数或排查照片。') }}</span>
                     </div>
                     <div v-if="recordDetail.diagnosis.attachments?.length" class="table-wrap">
-                      <m-table :columns="simpleAttachmentColumns" :dataSource="recordDetail.diagnosis.attachments" rowKey="id" evenColor />
+                      <m-table :columns="localizeColumns(simpleAttachmentColumns)" :dataSource="recordDetail.diagnosis.attachments" rowKey="id" evenColor />
                     </div>
-                    <div v-else class="state-inline">暂无诊断附件</div>
+                    <div v-else class="state-inline">{{ tx('暂无诊断附件') }}</div>
                   </section>
                 </div>
               </div>
@@ -728,11 +728,11 @@
                 <div class="execution-section-stack">
                   <section class="inspection-subsection inspection-subsection--no-top">
                     <div class="inspection-subsection-head">
-                      <strong>打卡记录</strong>
-                      <span>按打卡时间升序展示，每次打卡的照片随记录展示。</span>
+                      <strong>{{ tx('打卡记录') }}</strong>
+                      <span>{{ tx('按打卡时间升序展示，每次打卡的照片随记录展示。') }}</span>
                     </div>
                     <div class="table-wrap">
-                      <m-table :columns="checkInRecordColumns" :dataSource="recordDetail.checkInRecords" rowKey="id" evenColor>
+                      <m-table :columns="localizeColumns(checkInRecordColumns)" :dataSource="recordDetail.checkInRecords" rowKey="id" evenColor>
                         <template #attachment="row">
                           <div v-if="row.attachments?.length" class="thumbnail-list">
                             <div v-for="item in row.attachments" :key="item" class="photo-thumb">
@@ -752,13 +752,13 @@
                 <div class="execution-section-stack">
                   <section class="inspection-subsection inspection-subsection--no-top">
                     <div class="inspection-subsection-head">
-                      <strong>检查记录</strong>
-                      <span>展示策略事项检查结果、现场选择项和异常照片。</span>
+                      <strong>{{ tx('检查记录') }}</strong>
+                      <span>{{ tx('展示策略事项检查结果、现场选择项和异常照片。') }}</span>
                     </div>
                     <div class="table-wrap">
-                      <m-table :columns="inspectionRecordColumns" :dataSource="recordDetail.executionRecords.inspections" rowKey="id" evenColor>
+                      <m-table :columns="localizeColumns(inspectionRecordColumns)" :dataSource="recordDetail.executionRecords.inspections" rowKey="id" evenColor>
                         <template #resultCategory="row">
-                          <m-tag :type="resultTagType(row.resultCategory)">{{ row.resultCategory }}</m-tag>
+                          <m-tag :type="resultTagType(row.resultCategory)">{{ tx(row.resultCategory) }}</m-tag>
                         </template>
                         <template #photo="row">
                           <div v-if="row.photos?.length" class="thumbnail-list">
@@ -775,13 +775,13 @@
 
                   <section v-if="executionRepairRecords.length" class="inspection-subsection">
                     <div class="inspection-subsection-head">
-                      <strong>{{ isMaintenanceDetail ? '维保作业记录' : '维修记录' }}</strong>
-                      <span>{{ isMaintenanceDetail ? '维保执行中产生的清洁、润滑、更换、调整或维修作业记录。' : '执行中产生的维修类事项记录，字段口径与检查记录保持一致。' }}</span>
+                      <strong>{{ tx(isMaintenanceDetail ? '维保作业记录' : '维修记录') }}</strong>
+                      <span>{{ tx(isMaintenanceDetail ? '维保执行中产生的清洁、润滑、更换、调整或维修作业记录。' : '执行中产生的维修类事项记录，字段口径与检查记录保持一致。') }}</span>
                     </div>
                     <div class="table-wrap">
-                      <m-table :columns="inspectionRecordColumns" :dataSource="executionRepairRecords" rowKey="id" evenColor>
+                      <m-table :columns="localizeColumns(inspectionRecordColumns)" :dataSource="executionRepairRecords" rowKey="id" evenColor>
                         <template #resultCategory="row">
-                          <m-tag :type="resultTagType(row.resultCategory)">{{ row.resultCategory }}</m-tag>
+                          <m-tag :type="resultTagType(row.resultCategory)">{{ tx(row.resultCategory) }}</m-tag>
                         </template>
                         <template #photo="row">
                           <div v-if="row.photos?.length" class="thumbnail-list">
@@ -798,11 +798,11 @@
 
                   <section class="inspection-subsection">
                     <div class="inspection-subsection-head">
-                      <strong>抄录记录</strong>
-                      <span>按抄录时间升序展示设备点位的数值结果。</span>
+                      <strong>{{ tx('抄录记录') }}</strong>
+                      <span>{{ tx('按抄录时间升序展示设备点位的数值结果。') }}</span>
                     </div>
                     <div class="table-wrap">
-                      <m-table :columns="meterReadingColumns" :dataSource="recordDetail.executionRecords.meterReadings" rowKey="id" evenColor>
+                      <m-table :columns="localizeColumns(meterReadingColumns)" :dataSource="recordDetail.executionRecords.meterReadings" rowKey="id" evenColor>
                         <template #readingResult="row">
                           <strong>{{ row.value }} {{ row.unit }}</strong>
                         </template>
@@ -812,11 +812,11 @@
 
                   <section class="inspection-subsection">
                     <div class="inspection-subsection-head">
-                      <strong>无法执行记录</strong>
-                      <span>展示无法执行的实例、策略事项和原因说明。</span>
+                      <strong>{{ tx('无法执行记录') }}</strong>
+                      <span>{{ tx('展示无法执行的实例、策略事项和原因说明。') }}</span>
                     </div>
                     <div class="table-wrap">
-                      <m-table :columns="unableRecordColumns" :dataSource="recordDetail.unableRecords" rowKey="id" evenColor />
+                      <m-table :columns="localizeColumns(unableRecordColumns)" :dataSource="recordDetail.unableRecords" rowKey="id" evenColor />
                     </div>
                   </section>
                 </div>
@@ -826,13 +826,13 @@
                 <div class="execution-section-stack">
                   <section class="inspection-subsection inspection-subsection--no-top">
                     <div class="inspection-subsection-head">
-                      <strong>维修处理记录</strong>
-                      <span>记录执行人、维修对象、处理措施和处理结果。</span>
+                      <strong>{{ tx('维修处理记录') }}</strong>
+                      <span>{{ tx('记录执行人、维修对象、处理措施和处理结果。') }}</span>
                     </div>
                     <div class="table-wrap">
-                      <m-table :columns="repairExecutionRecordColumns" :dataSource="recordDetail.repairExecution.records" rowKey="id" evenColor>
+                      <m-table :columns="localizeColumns(repairExecutionRecordColumns)" :dataSource="recordDetail.repairExecution.records" rowKey="id" evenColor>
                         <template #repairResult="row">
-                          <m-tag :type="statusTextTagType(row.repairResult)">{{ row.repairResult }}</m-tag>
+                          <m-tag :type="statusTextTagType(row.repairResult)">{{ tx(row.repairResult) }}</m-tag>
                         </template>
                         <template #photo="row">
                           <div v-if="row.photos?.length" class="thumbnail-list">
@@ -848,29 +848,29 @@
                   </section>
                   <section class="inspection-subsection">
                     <div class="inspection-subsection-head">
-                      <strong>实际资源使用</strong>
-                      <span>区分实际人力、物料工具和外委服务，工具归还不计消耗成本。</span>
+                      <strong>{{ tx('实际资源使用') }}</strong>
+                      <span>{{ tx('区分实际人力、物料工具和外委服务，工具归还不计消耗成本。') }}</span>
                     </div>
                     <div class="inspection-table-grid inspection-table-grid--three">
                       <div class="table-wrap">
-                        <m-table :columns="actualLaborColumns" :dataSource="recordDetail.repairExecution.actualLabor" rowKey="id" evenColor />
+                        <m-table :columns="localizeColumns(actualLaborColumns)" :dataSource="recordDetail.repairExecution.actualLabor" rowKey="id" evenColor />
                       </div>
                       <div class="table-wrap">
-                        <m-table :columns="actualMaterialColumns" :dataSource="actualMaterialAndToolRecords" rowKey="id" evenColor />
+                        <m-table :columns="localizeColumns(actualMaterialColumns)" :dataSource="actualMaterialAndToolRecords" rowKey="id" evenColor />
                       </div>
                       <div class="table-wrap">
-                        <m-table :columns="outsourcingRecordColumns" :dataSource="recordDetail.repairExecution.outsourcingRecords" rowKey="id" evenColor />
+                        <m-table :columns="localizeColumns(outsourcingRecordColumns)" :dataSource="recordDetail.repairExecution.outsourcingRecords" rowKey="id" evenColor />
                       </div>
                     </div>
                   </section>
                   <section class="inspection-subsection">
                     <div class="inspection-subsection-head">
-                      <strong>恢复验证</strong>
-                      <span>维修执行必须形成恢复验证结果后才能进入验收。</span>
+                      <strong>{{ tx('恢复验证') }}</strong>
+                      <span>{{ tx('维修执行必须形成恢复验证结果后才能进入验收。') }}</span>
                     </div>
                     <div class="inspection-info-grid inspection-info-grid--compact">
                       <article v-for="item in recoveryVerificationFields" :key="item.label">
-                        <span>{{ item.label }}</span>
+                        <span>{{ tx(item.label) }}</span>
                         <strong>{{ item.value }}</strong>
                       </article>
                     </div>
@@ -882,74 +882,74 @@
                 <div class="execution-section-stack">
                   <section class="inspection-subsection inspection-subsection--no-top">
                     <div class="inspection-subsection-head">
-                      <strong>{{ isRepairDetail ? '维修验收信息' : '维保验收信息' }}</strong>
-                      <span>{{ isRepairDetail ? '确认维修恢复结果、返工要求和关闭意见。' : '验收维保结果、确认整改或关闭。' }}</span>
+                      <strong>{{ tx(isRepairDetail ? '维修验收信息' : '维保验收信息') }}</strong>
+                      <span>{{ tx(isRepairDetail ? '确认维修恢复结果、返工要求和关闭意见。' : '验收维保结果、确认整改或关闭。') }}</span>
                     </div>
                     <div v-if="recordDetail.acceptance.enabled" class="inspection-info-grid inspection-info-grid--compact">
                       <article v-for="item in acceptanceBaseFields" :key="item.label">
-                        <span>{{ item.label }}</span>
+                        <span>{{ tx(item.label) }}</span>
                         <strong>{{ item.value }}</strong>
                       </article>
                     </div>
-                    <div v-else class="state-inline">本单未启用验收记录</div>
+                    <div v-else class="state-inline">{{ tx('本单未启用验收记录') }}</div>
                   </section>
                   <template v-if="recordDetail.acceptance.enabled">
                     <section class="inspection-subsection">
                       <div class="inspection-subsection-head">
-                        <strong>验收标准</strong>
-                        <span>按标准项逐项记录验收结果和说明。</span>
+                        <strong>{{ tx('验收标准') }}</strong>
+                        <span>{{ tx('按标准项逐项记录验收结果和说明。') }}</span>
                       </div>
                       <div class="table-wrap">
-                        <m-table :columns="acceptanceCriteriaColumns" :dataSource="recordDetail.acceptance.criteria" rowKey="id" evenColor>
+                        <m-table :columns="localizeColumns(acceptanceCriteriaColumns)" :dataSource="recordDetail.acceptance.criteria" rowKey="id" evenColor>
                           <template #result="row">
-                            <m-tag :type="statusTextTagType(row.result)">{{ row.result }}</m-tag>
+                            <m-tag :type="statusTextTagType(row.result)">{{ tx(row.result) }}</m-tag>
                           </template>
                         </m-table>
                       </div>
                     </section>
                     <section class="inspection-subsection">
                       <div class="inspection-subsection-head">
-                        <strong>{{ isRepairDetail ? '返工要求' : '整改要求' }}</strong>
-                        <span>验收不通过或有条件通过时展示。</span>
+                        <strong>{{ tx(isRepairDetail ? '返工要求' : '整改要求') }}</strong>
+                        <span>{{ tx('验收不通过或有条件通过时展示。') }}</span>
                       </div>
                       <div v-if="acceptanceRequirementRecords.length" class="table-wrap">
-                        <m-table :columns="acceptanceRequirementColumns" :dataSource="acceptanceRequirementRecords" rowKey="id" evenColor>
+                        <m-table :columns="localizeColumns(acceptanceRequirementColumns)" :dataSource="acceptanceRequirementRecords" rowKey="id" evenColor>
                           <template #status="row">
-                            <m-tag :type="statusTextTagType(row.status)">{{ row.status }}</m-tag>
+                            <m-tag :type="statusTextTagType(row.status)">{{ tx(row.status) }}</m-tag>
                           </template>
                         </m-table>
                       </div>
-                      <div v-else class="state-inline">暂无整改或返工要求</div>
+                      <div v-else class="state-inline">{{ tx('暂无整改或返工要求') }}</div>
                     </section>
                     <section v-if="isRepairDetail" class="inspection-subsection">
                       <div class="inspection-subsection-head">
-                        <strong>复验记录</strong>
-                        <span>返工后复验时展示。</span>
+                        <strong>{{ tx('复验记录') }}</strong>
+                        <span>{{ tx('返工后复验时展示。') }}</span>
                       </div>
                       <div v-if="recordDetail.acceptance.recheckRecords?.length" class="table-wrap">
-                        <m-table :columns="recheckRecordColumns" :dataSource="recordDetail.acceptance.recheckRecords" rowKey="id" evenColor />
+                        <m-table :columns="localizeColumns(recheckRecordColumns)" :dataSource="recordDetail.acceptance.recheckRecords" rowKey="id" evenColor />
                       </div>
-                      <div v-else class="state-inline">暂无复验记录</div>
+                      <div v-else class="state-inline">{{ tx('暂无复验记录') }}</div>
                     </section>
                     <section v-if="isMaintenanceDetail" class="inspection-subsection">
                       <div class="inspection-subsection-head">
-                        <strong>服务报告</strong>
-                        <span>外委、法检、强检时展示服务或检测报告。</span>
+                        <strong>{{ tx('服务报告') }}</strong>
+                        <span>{{ tx('外委、法检、强检时展示服务或检测报告。') }}</span>
                       </div>
                       <div v-if="recordDetail.acceptance.serviceReports?.length" class="table-wrap">
-                        <m-table :columns="simpleAttachmentColumns" :dataSource="recordDetail.acceptance.serviceReports" rowKey="id" evenColor />
+                        <m-table :columns="localizeColumns(simpleAttachmentColumns)" :dataSource="recordDetail.acceptance.serviceReports" rowKey="id" evenColor />
                       </div>
-                      <div v-else class="state-inline">暂无服务报告</div>
+                      <div v-else class="state-inline">{{ tx('暂无服务报告') }}</div>
                     </section>
                     <section class="inspection-subsection">
                       <div class="inspection-subsection-head">
-                        <strong>签字记录</strong>
-                        <span>需要电子签名时展示签字意见。</span>
+                        <strong>{{ tx('签字记录') }}</strong>
+                        <span>{{ tx('需要电子签名时展示签字意见。') }}</span>
                       </div>
                       <div v-if="recordDetail.acceptance.signatureRecords?.length" class="table-wrap">
-                        <m-table :columns="signatureRecordColumns" :dataSource="recordDetail.acceptance.signatureRecords" rowKey="id" evenColor />
+                        <m-table :columns="localizeColumns(signatureRecordColumns)" :dataSource="recordDetail.acceptance.signatureRecords" rowKey="id" evenColor />
                       </div>
-                      <div v-else class="state-inline">暂无签字记录</div>
+                      <div v-else class="state-inline">{{ tx('暂无签字记录') }}</div>
                     </section>
                   </template>
                 </div>
@@ -959,13 +959,13 @@
                 <div class="execution-section-stack">
                   <section class="inspection-subsection inspection-subsection--no-top">
                     <div class="inspection-subsection-head">
-                      <strong>问题与维修记录</strong>
-                      <span>现场自修直接展示措施和前后照片，转维修展示关联维修单。</span>
+                      <strong>{{ tx('问题与维修记录') }}</strong>
+                      <span>{{ tx('现场自修直接展示措施和前后照片，转维修展示关联维修单。') }}</span>
                     </div>
                     <div class="table-wrap">
-                      <m-table :columns="problemRepairColumns" :dataSource="recordDetail.problemAndRepairRecords" rowKey="id" evenColor>
+                      <m-table :columns="localizeColumns(problemRepairColumns)" :dataSource="recordDetail.problemAndRepairRecords" rowKey="id" evenColor>
                         <template #problemStatus="row">
-                          <m-tag :type="row.problemStatus === '已自修' ? 'completed' : 'processing'">{{ row.problemStatus }}</m-tag>
+                          <m-tag :type="row.problemStatus === '已自修' ? 'completed' : 'processing'">{{ tx(row.problemStatus) }}</m-tag>
                         </template>
                         <template #repairRecord="row">
                           <div v-if="row.repairMode === '自修'" class="repair-cell">
@@ -997,13 +997,13 @@
               <div v-else-if="activeRecordTab === 'flow'" class="inspection-tab-body">
                 <section v-if="isInspectionDetail || isMaintenanceDetail || isRepairDetail" class="inspection-subsection inspection-subsection--no-top">
                   <div class="inspection-subsection-head">
-                    <strong>流程节点列表</strong>
-                    <span>{{ workflowTableHint }}</span>
+                    <strong>{{ tx('流程节点列表') }}</strong>
+                    <span>{{ tx(workflowTableHint) }}</span>
                   </div>
                   <div class="table-wrap">
-                    <m-table :columns="workRecordFlowColumns" :dataSource="recordDetail.workflowRecords" rowKey="id" evenColor>
+                    <m-table :columns="localizeColumns(workRecordFlowColumns)" :dataSource="recordDetail.workflowRecords" rowKey="id" evenColor>
                       <template #nodeStatus="row">
-                        <m-tag :type="statusTextTagType(row.nodeStatus || row.status)">{{ row.nodeStatus || row.status }}</m-tag>
+                        <m-tag :type="statusTextTagType(row.nodeStatus || row.status)">{{ tx(row.nodeStatus || row.status) }}</m-tag>
                       </template>
                     </m-table>
                   </div>
@@ -1014,13 +1014,13 @@
                     <div>
                       <div class="inspection-flow-head">
                         <strong>{{ record.node }}</strong>
-                        <m-tag :type="record.tagType">{{ record.status }}</m-tag>
+                        <m-tag :type="record.tagType">{{ tx(record.status) }}</m-tag>
                       </div>
                       <p>{{ record.desc }}</p>
                       <div class="inspection-flow-meta">
                         <span>{{ record.time }}</span>
                         <span>{{ record.operator }}</span>
-                        <span v-if="record.approvalOrder">审批单：{{ record.approvalOrder }} / {{ record.approvalStatus }}</span>
+                        <span v-if="record.approvalOrder">{{ tx('审批单：{order} / {status}', { order: record.approvalOrder, status: tx(record.approvalStatus) }) }}</span>
                       </div>
                     </div>
                   </article>
@@ -1030,51 +1030,51 @@
               <div v-else-if="activeRecordTab === 'plan'" class="inspection-tab-body">
                 <section class="inspection-subsection inspection-subsection--no-top">
                   <div class="inspection-subsection-head">
-                    <strong>{{ planBaseTitle }}</strong>
-                    <span>{{ planBaseHint }}</span>
+                    <strong>{{ tx(planBaseTitle) }}</strong>
+                    <span>{{ tx(planBaseHint) }}</span>
                   </div>
                   <div class="inspection-info-grid inspection-info-grid--compact">
                     <article v-for="item in recordPlanBaseFields" :key="item.label">
-                      <span>{{ item.label }}</span>
+                      <span>{{ tx(item.label) }}</span>
                       <strong>{{ item.value }}</strong>
                     </article>
                   </div>
                 </section>
                 <section class="inspection-subsection">
                   <div class="inspection-subsection-head">
-                    <strong>时间要求</strong>
-                    <span>{{ isRepairDetail ? '维修方案要求时间、停机窗口、风险措施和验收标准。' : '当前单据应在要求开始和结束时间内完成。' }}</span>
+                    <strong>{{ tx('时间要求') }}</strong>
+                    <span>{{ tx(isRepairDetail ? '维修方案要求时间、停机窗口、风险措施和验收标准。' : '当前单据应在要求开始和结束时间内完成。') }}</span>
                   </div>
                   <div class="inspection-info-grid inspection-info-grid--compact">
                     <article v-for="item in recordPlanTimeFields" :key="item.label">
-                      <span>{{ item.label }}</span>
+                      <span>{{ tx(item.label) }}</span>
                       <strong>{{ item.value }}</strong>
                     </article>
                   </div>
                 </section>
                 <section class="inspection-subsection">
                   <div class="inspection-subsection-head">
-                    <strong>{{ strategySectionTitle }}</strong>
-                    <span>执行对象为统计数据，点击数量查看对象明细。</span>
+                    <strong>{{ tx(strategySectionTitle) }}</strong>
+                    <span>{{ tx('执行对象为统计数据，点击数量查看对象明细。') }}</span>
                   </div>
                   <div class="table-wrap">
-                    <m-table :columns="strategyItemColumns" :dataSource="recordDetail.sourcePlan.strategyItems" rowKey="id" evenColor>
+                    <m-table :columns="localizeColumns(strategyItemColumns)" :dataSource="recordDetail.sourcePlan.strategyItems" rowKey="id" evenColor>
                       <template #type="row">
-                        <m-tag :type="row.type === '维修' ? 'rejected' : 'processing'">{{ row.type }}</m-tag>
+                        <m-tag :type="row.type === '维修' ? 'rejected' : 'processing'">{{ tx(row.type) }}</m-tag>
                       </template>
                       <template #objectTypes="row">
                         <span>{{ strategyObjectTypes(row) }}</span>
                       </template>
                       <template #executionObjects="row">
-                        <m-button type="link" size="small" @click="openStrategyObjects(row)">{{ row.objectCount }} 个对象</m-button>
+                        <m-button type="link" size="small" @click="openStrategyObjects(row)">{{ tx('{count} 个对象', { count: row.objectCount }) }}</m-button>
                       </template>
                     </m-table>
                   </div>
                 </section>
                 <section class="inspection-subsection">
                   <div class="inspection-subsection-head">
-                    <strong>{{ planRequirementTitle }}</strong>
-                    <span>{{ planRequirementHint }}</span>
+                    <strong>{{ tx(planRequirementTitle) }}</strong>
+                    <span>{{ tx(planRequirementHint) }}</span>
                   </div>
                   <ul v-if="recordDetail.sourcePlan.checkInRequirements.length" class="check-rule-list">
                     <li v-for="rule in recordDetail.sourcePlan.checkInRequirements" :key="rule.id">
@@ -1082,54 +1082,54 @@
                         <strong>{{ rule.checkInType }}</strong>
                         <span>{{ rule.objectScope }}</span>
                       </div>
-                      <m-tag type="processing">{{ rule.method }}</m-tag>
+                      <m-tag type="processing">{{ tx(rule.method) }}</m-tag>
                     </li>
                   </ul>
-                  <div v-else class="state-inline">本单无强制打卡要求</div>
+                  <div v-else class="state-inline">{{ tx('本单无强制打卡要求') }}</div>
                 </section>
                 <section class="inspection-subsection">
                   <div class="inspection-subsection-head">
-                    <strong>成本计划</strong>
-                    <span>按人力、物资和其他费用三类查看计划成本。</span>
+                    <strong>{{ tx('成本计划') }}</strong>
+                    <span>{{ tx('按人力、物资和其他费用三类查看计划成本。') }}</span>
                   </div>
                   <div class="plan-cost-panel">
-                    <m-tabs v-model="planCostTab" :data="planCostTabs" />
+                    <m-tabs v-model="planCostTab" :data="localizeOptions(planCostTabs)" />
                     <div class="plan-cost-body">
                       <div v-if="activePlanCostTab === 'labor'" class="plan-cost-pane">
                         <div class="plan-cost-pane-head">
-                          <strong>计划人力成本</strong>
-                          <span>按实例与事项汇总后的计划人工时，不按事项展开。</span>
+                          <strong>{{ tx('计划人力成本') }}</strong>
+                          <span>{{ tx('按实例与事项汇总后的计划人工时，不按事项展开。') }}</span>
                         </div>
                         <div class="table-wrap">
-                          <m-table :columns="planLaborCostColumns" :dataSource="recordDetail.sourcePlan.costPlan.laborCosts" rowKey="id" evenColor />
+                          <m-table :columns="localizeColumns(planLaborCostColumns)" :dataSource="recordDetail.sourcePlan.costPlan.laborCosts" rowKey="id" evenColor />
                         </div>
                       </div>
                       <div v-else-if="activePlanCostTab === 'material'" class="plan-cost-pane">
                         <div class="plan-cost-pane-head">
-                          <strong>计划物资使用</strong>
-                          <span>包含计划消耗品和工具使用情况。</span>
+                          <strong>{{ tx('计划物资使用') }}</strong>
+                          <span>{{ tx('包含计划消耗品和工具使用情况。') }}</span>
                         </div>
                         <div class="table-wrap">
-                          <m-table :columns="planMaterialUsageColumns" :dataSource="recordDetail.sourcePlan.costPlan.materialUsages" rowKey="id" evenColor>
+                          <m-table :columns="localizeColumns(planMaterialUsageColumns)" :dataSource="recordDetail.sourcePlan.costPlan.materialUsages" rowKey="id" evenColor>
                             <template #materialType="row">
-                              <m-tag :type="row.materialType === '工具' ? 'processing' : 'completed'">{{ row.materialType }}</m-tag>
+                              <m-tag :type="row.materialType === '工具' ? 'processing' : 'completed'">{{ tx(row.materialType) }}</m-tag>
                             </template>
                           </m-table>
                         </div>
                       </div>
                       <div v-else class="plan-cost-pane">
                         <div class="plan-cost-pane-head">
-                          <strong>计划其他费用</strong>
-                          <span>无其他费用时显示空表，有费用时按费用项列出。</span>
+                          <strong>{{ tx('计划其他费用') }}</strong>
+                          <span>{{ tx('无其他费用时显示空表，有费用时按费用项列出。') }}</span>
                         </div>
                         <div v-if="recordDetail.sourcePlan.costPlan.otherFees.length" class="table-wrap">
-                          <m-table :columns="planOtherFeeColumns" :dataSource="recordDetail.sourcePlan.costPlan.otherFees" rowKey="id" evenColor />
+                          <m-table :columns="localizeColumns(planOtherFeeColumns)" :dataSource="recordDetail.sourcePlan.costPlan.otherFees" rowKey="id" evenColor />
                         </div>
                         <div v-else class="plan-empty-table">
                           <div class="plan-empty-table-head">
                             <span v-for="column in planOtherFeeColumns" :key="column.dataIndex">{{ column.title }}</span>
                           </div>
-                          <div class="plan-empty-box">暂无费用项</div>
+                          <div class="plan-empty-box">{{ tx('暂无费用项') }}</div>
                         </div>
                       </div>
                     </div>
@@ -1140,12 +1140,12 @@
               <div v-else-if="activeRecordTab === 'route'" class="inspection-tab-body">
                 <section class="inspection-subsection inspection-subsection--no-top">
                   <div class="inspection-subsection-head">
-                    <strong>路线摘要</strong>
-                    <span>按规则书展示计划路线、实际路线和路线偏差说明。</span>
+                    <strong>{{ tx('路线摘要') }}</strong>
+                    <span>{{ tx('按规则书展示计划路线、实际路线和路线偏差说明。') }}</span>
                   </div>
                   <div class="inspection-info-grid inspection-info-grid--compact">
                     <article v-for="item in routeObjectSummaryFields" :key="item.label">
-                      <span>{{ item.label }}</span>
+                      <span>{{ tx(item.label) }}</span>
                       <strong>{{ item.value }}</strong>
                     </article>
                   </div>
@@ -1153,20 +1153,20 @@
                 <div class="inspection-table-grid inspection-table-grid--route">
                   <div class="inspection-subsection">
                     <div class="inspection-subsection-head">
-                      <strong>计划路线</strong>
-                      <span>只展示空间顺序和空间所在建筑楼层。</span>
+                      <strong>{{ tx('计划路线') }}</strong>
+                      <span>{{ tx('只展示空间顺序和空间所在建筑楼层。') }}</span>
                     </div>
                     <div class="table-wrap">
-                      <m-table :columns="plannedRouteColumns" :dataSource="recordDetail.routes.planned" rowKey="routeNo" evenColor />
+                      <m-table :columns="localizeColumns(plannedRouteColumns)" :dataSource="recordDetail.routes.planned" rowKey="routeNo" evenColor />
                     </div>
                   </div>
                   <div class="inspection-subsection">
                     <div class="inspection-subsection-head">
-                      <strong>实际路线</strong>
-                      <span>同一空间可因不同时间录入多次出现。</span>
+                      <strong>{{ tx('实际路线') }}</strong>
+                      <span>{{ tx('同一空间可因不同时间录入多次出现。') }}</span>
                     </div>
                     <div class="table-wrap">
-                      <m-table :columns="actualRouteColumns" :dataSource="recordDetail.routes.actual" rowKey="id" evenColor />
+                      <m-table :columns="localizeColumns(actualRouteColumns)" :dataSource="recordDetail.routes.actual" rowKey="id" evenColor />
                     </div>
                   </div>
                 </div>
@@ -1175,41 +1175,41 @@
               <div v-else-if="activeRecordTab === 'cost'" class="inspection-tab-body">
                 <div class="cost-summary-grid">
                   <article v-for="item in costSummaryItems" :key="item.label" class="cost-summary-card">
-                    <span>{{ item.label }}</span>
+                    <span>{{ tx(item.label) }}</span>
                     <strong>{{ item.value }}</strong>
-                    <em>{{ item.note }}</em>
+                    <em>{{ tx(item.note) }}</em>
                   </article>
                 </div>
                 <div class="execution-section-stack">
                   <section class="inspection-subsection inspection-subsection--no-top">
                     <div class="inspection-subsection-head">
-                      <strong>人力成本</strong>
-                      <span>按计划人工时与实际人工时对比。</span>
+                      <strong>{{ tx('人力成本') }}</strong>
+                      <span>{{ tx('按计划人工时与实际人工时对比。') }}</span>
                     </div>
                     <div class="table-wrap">
-                      <m-table :columns="laborCostColumns" :dataSource="recordDetail.costInfo.laborCosts" rowKey="id" evenColor />
+                      <m-table :columns="localizeColumns(laborCostColumns)" :dataSource="recordDetail.costInfo.laborCosts" rowKey="id" evenColor />
                     </div>
                   </section>
                   <section class="inspection-subsection">
                     <div class="inspection-subsection-head">
-                      <strong>物资使用</strong>
-                      <span>按计划使用量与实际消耗量对比。</span>
+                      <strong>{{ tx('物资使用') }}</strong>
+                      <span>{{ tx('按计划使用量与实际消耗量对比。') }}</span>
                     </div>
                     <div class="table-wrap">
-                      <m-table :columns="materialCostColumns" :dataSource="recordDetail.costInfo.materialCosts" rowKey="id" evenColor>
+                      <m-table :columns="localizeColumns(materialCostColumns)" :dataSource="recordDetail.costInfo.materialCosts" rowKey="id" evenColor>
                         <template #materialType="row">
-                          <m-tag :type="row.materialType === '工具' ? 'processing' : 'completed'">{{ row.materialType }}</m-tag>
+                          <m-tag :type="row.materialType === '工具' ? 'processing' : 'completed'">{{ tx(row.materialType) }}</m-tag>
                         </template>
                       </m-table>
                     </div>
                   </section>
                   <section class="inspection-subsection">
                     <div class="inspection-subsection-head">
-                      <strong>其他费用</strong>
-                      <span>按计划费用与实际维修金额等费用对比。</span>
+                      <strong>{{ tx('其他费用') }}</strong>
+                      <span>{{ tx('按计划费用与实际维修金额等费用对比。') }}</span>
                     </div>
                     <div class="table-wrap">
-                      <m-table :columns="otherCostColumns" :dataSource="recordDetail.costInfo.otherCosts" rowKey="id" evenColor />
+                      <m-table :columns="localizeColumns(otherCostColumns)" :dataSource="recordDetail.costInfo.otherCosts" rowKey="id" evenColor />
                     </div>
                   </section>
                 </div>
@@ -1217,9 +1217,9 @@
 
               <div v-else class="inspection-tab-body">
                 <div class="table-wrap">
-                  <m-table :columns="slaEvaluationColumns" :dataSource="recordDetail.slaEvaluations" rowKey="id" evenColor>
+                  <m-table :columns="localizeColumns(slaEvaluationColumns)" :dataSource="recordDetail.slaEvaluations" rowKey="id" evenColor>
                     <template #result="row">
-                      <m-tag :type="row.result === '达标' ? 'completed' : 'processing'">{{ row.result }}</m-tag>
+                      <m-tag :type="row.result === '达标' ? 'completed' : 'processing'">{{ tx(row.result) }}</m-tag>
                     </template>
                   </m-table>
                 </div>
@@ -1229,17 +1229,17 @@
         </template>
 
         <template v-else>
-          <m-tabs v-model="activeTab" :data="tabs" size="large" />
+          <m-tabs v-model="activeTab" :data="localizeOptions(tabs)" size="large" />
 
           <div class="detail-tab-body" v-if="activeTab === 'common'">
-            <SectionTitle title="公共信息" />
+            <SectionTitle :title="tx('公共信息')" />
             <div class="info-grid">
               <article v-for="item in commonInfo" :key="item.label">
-                <span>{{ item.label }}</span>
+                <span>{{ tx(item.label) }}</span>
                 <strong>{{ item.value }}</strong>
               </article>
             </div>
-            <SectionTitle title="附件证据" />
+            <SectionTitle :title="tx('附件证据')" />
             <div class="attachment-list">
               <div v-for="item in order.attachments" :key="item.name" class="attachment-card">
                 <strong>{{ item.name }}</strong>
@@ -1254,12 +1254,12 @@
             <div class="type-section-list">
               <article v-for="section in typedDetail.sections" :key="section.title" class="type-section">
                 <div class="block-header">
-                  <strong>{{ section.title }}</strong>
-                  <m-tag :type="section.tagType">{{ section.tag }}</m-tag>
+                  <strong>{{ tx(section.title) }}</strong>
+                  <m-tag :type="section.tagType">{{ tx(section.tag) }}</m-tag>
                 </div>
                 <div class="type-field-grid">
                   <article v-for="field in section.fields" :key="field.label">
-                    <span>{{ field.label }}</span>
+                    <span>{{ tx(field.label) }}</span>
                     <strong>{{ field.value }}</strong>
                   </article>
                 </div>
@@ -1268,7 +1268,7 @@
           </div>
 
           <div class="detail-tab-body" v-else-if="activeTab === 'flow'">
-            <SectionTitle title="流程轨迹" />
+            <SectionTitle :title="tx('流程轨迹')" />
             <div class="timeline">
               <article v-for="item in order.timeline" :key="item.node" class="timeline-item" :class="{ 'timeline-item--active': item.active }">
                 <span>{{ item.time }}</span>
@@ -1279,10 +1279,10 @@
           </div>
 
           <div class="detail-tab-body" v-else-if="activeTab === 'relations'">
-            <SectionTitle title="关联单据" />
+            <SectionTitle :title="tx('关联单据')" />
             <div class="relation-list">
               <article v-for="item in order.relations" :key="item.code" class="relation-card">
-                <m-tag type="processing">{{ item.type }}</m-tag>
+                <m-tag type="processing">{{ tx(item.type) }}</m-tag>
                 <strong>{{ item.code }}</strong>
                 <span>{{ item.desc }}</span>
               </article>
@@ -1290,7 +1290,7 @@
           </div>
 
           <div class="detail-tab-body" v-else>
-            <SectionTitle title="操作记录" />
+            <SectionTitle :title="tx('操作记录')" />
             <div class="log-list">
               <article v-for="item in order.logs" :key="`${item.time}-${item.action}`">
                 <strong>{{ item.action }}</strong>
@@ -1303,26 +1303,26 @@
       </div>
 
       <aside v-if="!isWorkRecordDetail" class="detail-side-panel">
-        <SectionTitle title="当前责任" />
+        <SectionTitle :title="tx('当前责任')" />
         <div class="side-card">
-          <span>当前节点</span>
+          <span>{{ tx('当前节点') }}</span>
           <strong>{{ order.currentNode }}</strong>
-          <span>责任对象</span>
+          <span>{{ tx('责任对象') }}</span>
           <strong>{{ order.owner }}</strong>
         </div>
-        <SectionTitle title="SLA 投影" />
+        <SectionTitle :title="tx('SLA 投影')" />
         <div class="side-card">
-          <span>目标完成</span>
+          <span>{{ tx('目标完成') }}</span>
           <strong>{{ order.targetFinishAt }}</strong>
-          <span>命中规则</span>
+          <span>{{ tx('命中规则') }}</span>
           <strong>{{ order.slaPolicy }}</strong>
         </div>
-        <SectionTitle title="派生关系" />
+        <SectionTitle :title="tx('派生关系')" />
         <div class="side-card">
-          <span>来源</span>
+          <span>{{ tx('来源') }}</span>
           <strong>{{ order.source }}</strong>
-          <span>派生</span>
-          <strong>{{ order.relations.length }} 条关联</strong>
+          <span>{{ tx('派生') }}</span>
+          <strong>{{ tx('{count} 条关联', { count: order.relations.length }) }}</strong>
         </div>
       </aside>
     </section>
@@ -1330,11 +1330,11 @@
     <m-modal v-model:visible="strategyObjectModalVisible" :title="strategyObjectModalTitle" :width="840" :max-width="840">
       <template #content>
         <div class="table-wrap">
-          <m-table :columns="strategyObjectColumns" :dataSource="selectedStrategyObjects" rowKey="id" evenColor />
+          <m-table :columns="localizeColumns(strategyObjectColumns)" :dataSource="selectedStrategyObjects" rowKey="id" evenColor />
         </div>
       </template>
       <template #footer>
-        <m-button type="primary" @click="strategyObjectModalVisible = false">关闭</m-button>
+        <m-button type="primary" @click="strategyObjectModalVisible = false">{{ tx('关闭') }}</m-button>
       </template>
     </m-modal>
   </main>
@@ -1344,9 +1344,11 @@
 import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import SectionTitle from '@/components/SectionTitle.vue'
+import { useLocale } from '../i18n'
 
 const router = useRouter()
 const route = useRoute()
+const { tx, localizeColumns, localizeOptions } = useLocale()
 const activeTab = ref('typeInfo')
 const recordTab = ref('checkIn')
 const planCostTab = ref('labor')
@@ -3805,7 +3807,7 @@ const executionRepairRecords = computed(() => recordDetail.value.executionRecord
 const selectedStrategyObjects = computed(() => selectedStrategyItem.value?.executionObjects || [])
 const strategyObjectModalTitle = computed(() => {
   const itemName = selectedStrategyItem.value?.name || selectedStrategyItem.value?.itemName
-  return itemName ? `${itemName} - 执行对象明细` : '执行对象明细'
+  return itemName ? tx('{name} - 执行对象明细', { name: itemName }) : tx('执行对象明细')
 })
 
 const strategyItemColumns = [
@@ -4255,8 +4257,8 @@ const slaEvaluationColumns = [
 ]
 
 const typedDetail = computed(() => ({
-  title: order.value.detailTitle,
-  hint: order.value.detailHint,
+  title: tx(order.value.detailTitle),
+  hint: tx(order.value.detailHint),
   sections: order.value.detailSections
 }))
 
@@ -4295,15 +4297,15 @@ function attachmentThumb(label, tone = 'default') {
 }
 
 function workTypeLabel(value) {
-  return workTypeOptions.find(item => item.value === value)?.label || value
+  return tx(workTypeOptions.find(item => item.value === value)?.label || value)
 }
 
 function statusLabel(value) {
-  return statusOptions.find(item => item.value === value)?.label || value
+  return tx(statusOptions.find(item => item.value === value)?.label || value)
 }
 
 function slaLabel(value) {
-  return slaOptions.find(item => item.value === value)?.label || value
+  return tx(slaOptions.find(item => item.value === value)?.label || value)
 }
 
 function resultTagType(value) {

@@ -1,11 +1,11 @@
 <template>
   <main class="order-list-page">
     <section class="order-title-row">
-      <h2 class="page-title">工作单据管理</h2>
+      <h2 class="page-title">{{ tx('工作单据管理') }}</h2>
     </section>
 
     <section class="order-workbench">
-      <aside class="order-type-rail" aria-label="工作类型">
+      <aside class="order-type-rail" :aria-label="tx('工作类型')">
         <button
           v-for="item in workTypeViews"
           :key="item.value"
@@ -14,7 +14,7 @@
           type="button"
           @click="switchWorkType(item.value)"
         >
-          <strong>{{ item.label }}</strong>
+          <strong>{{ tx(item.label) }}</strong>
           <b>{{ typeCount(item.value) }}</b>
         </button>
       </aside>
@@ -22,67 +22,67 @@
       <section class="order-table-panel">
         <div class="filter-grid">
           <label class="filter-field filter-field--code">
-            <span>单据编码</span>
-            <m-input v-model="filter.orderNo" :width="'100%'" placeholder="请输入单据编码" @update:model-value="handleSearch" />
+            <span>{{ tx('单据编码') }}</span>
+            <m-input v-model="filter.orderNo" :width="'100%'" :placeholder="tx('请输入单据编码')" @update:model-value="handleSearch" />
           </label>
           <label class="filter-field filter-field--name">
-            <span>单据名称</span>
-            <m-input v-model="filter.title" :width="'100%'" placeholder="请输入单据名称" @update:model-value="handleSearch" />
+            <span>{{ tx('单据名称') }}</span>
+            <m-input v-model="filter.title" :width="'100%'" :placeholder="tx('请输入单据名称')" @update:model-value="handleSearch" />
           </label>
           <label class="filter-field">
-            <span>工作分类</span>
-            <m-select v-model="filter.classification" :options="classificationOptions" style="width: 100%;" placeholder="请选择" clearable @change="handleSearch" />
+            <span>{{ tx('工作分类') }}</span>
+            <m-select v-model="filter.classification" :options="classificationOptions" style="width: 100%;" :placeholder="tx('请选择')" clearable @change="handleSearch" />
           </label>
           <label class="filter-field">
-            <span>状态</span>
-            <m-select v-model="filter.status" :options="currentStatusOptions" style="width: 100%;" placeholder="请选择" clearable @change="handleSearch" />
+            <span>{{ tx('状态') }}</span>
+            <m-select v-model="filter.status" :options="currentStatusOptions" style="width: 100%;" :placeholder="tx('请选择')" clearable @change="handleSearch" />
           </label>
           <label class="filter-field">
-            <span>当前节点</span>
-            <m-select v-model="filter.currentNode" :options="currentNodeOptions" style="width: 100%;" placeholder="请选择" clearable @change="handleSearch" />
+            <span>{{ tx('当前节点') }}</span>
+            <m-select v-model="filter.currentNode" :options="currentNodeOptions" style="width: 100%;" :placeholder="tx('请选择')" clearable @change="handleSearch" />
           </label>
           <label class="filter-field">
-            <span>当前责任人</span>
-            <m-select v-model="filter.owner" :options="ownerOptions" style="width: 100%;" placeholder="请选择" clearable @change="handleSearch" />
+            <span>{{ tx('当前责任人') }}</span>
+            <m-select v-model="filter.owner" :options="ownerOptions" style="width: 100%;" :placeholder="tx('请选择')" clearable @change="handleSearch" />
           </label>
           <label class="filter-field">
-            <span>创建人</span>
-            <m-select v-model="filter.creator" :options="creatorOptions" style="width: 100%;" placeholder="请选择" clearable @change="handleSearch" />
+            <span>{{ tx('创建人') }}</span>
+            <m-select v-model="filter.creator" :options="creatorOptions" style="width: 100%;" :placeholder="tx('请选择')" clearable @change="handleSearch" />
           </label>
           <label class="filter-field">
-            <span>单据来源</span>
-            <m-select v-model="filter.source" :options="sourceOptions" style="width: 100%;" placeholder="请选择" clearable @change="handleSearch" />
+            <span>{{ tx('单据来源') }}</span>
+            <m-select v-model="filter.source" :options="sourceOptions" style="width: 100%;" :placeholder="tx('请选择')" clearable @change="handleSearch" />
           </label>
           <label class="filter-field filter-field--date">
-            <span>创建时间</span>
-            <m-date-picker v-model="filter.createdAtRange" type="daterange" :width="220" placeholder="请选择" clearable @change="handleSearch" />
+            <span>{{ tx('创建时间') }}</span>
+            <m-date-picker :key="`created-${locale}`" v-model="filter.createdAtRange" type="daterange" :width="220" :placeholder="tx('请选择')" clearable @change="handleSearch" />
           </label>
           <label class="filter-field filter-field--date">
-            <span>状态变更时间</span>
-            <m-date-picker v-model="filter.statusChangedAtRange" type="daterange" :width="220" placeholder="请选择" clearable @change="handleSearch" />
+            <span>{{ tx('状态变更时间') }}</span>
+            <m-date-picker :key="`status-${locale}`" v-model="filter.statusChangedAtRange" type="daterange" :width="220" :placeholder="tx('请选择')" clearable @change="handleSearch" />
           </label>
           <label class="filter-field filter-field--date">
-            <span>完结时间</span>
-            <m-date-picker v-model="filter.completedAtRange" type="daterange" :width="220" placeholder="请选择" clearable @change="handleSearch" />
+            <span>{{ tx('完结时间') }}</span>
+            <m-date-picker :key="`completed-${locale}`" v-model="filter.completedAtRange" type="daterange" :width="220" :placeholder="tx('请选择')" clearable @change="handleSearch" />
           </label>
           <div class="filter-actions">
-            <m-button type="link" @click="handleSearch">查询</m-button>
+            <m-button type="link" @click="handleSearch">{{ tx('查询') }}</m-button>
             <span class="filter-divider"></span>
-            <m-button type="link" @click="handleReset">重置</m-button>
+            <m-button type="link" @click="handleReset">{{ tx('重置') }}</m-button>
           </div>
         </div>
 
         <div class="table-context">
-          <strong>{{ activeView.tableTitle }}</strong>
+          <strong>{{ tx(activeView.tableTitle) }}</strong>
         </div>
 
         <div class="state-box" v-if="loading">
           <div class="state-skeleton" v-for="item in 6" :key="item"></div>
         </div>
         <div class="state-box" v-else-if="tableData.length === 0">
-          <h3>暂无匹配的{{ activeView.label }}</h3>
-          <p>请清除筛选条件，或切换到其他{{ activeView.label }}。</p>
-          <m-button type="primary" @click="handleReset">清除筛选</m-button>
+          <h3>{{ tx('暂无匹配的{type}', { type: tx(activeView.label) }) }}</h3>
+          <p>{{ tx('请清除筛选条件，或切换到其他{type}。', { type: tx(activeView.label) }) }}</p>
+          <m-button type="primary" @click="handleReset">{{ tx('清除筛选') }}</m-button>
         </div>
         <div class="table-wrap" v-else>
           <m-table :columns="columns" :dataSource="tableData" rowKey="orderNo" evenColor>
@@ -99,7 +99,7 @@
               {{ row.completedAt || '-' }}
             </template>
             <template #action="row">
-              <m-button type="link" size="small" @click="goDetail(row)">详情</m-button>
+              <m-button type="link" size="small" @click="goDetail(row)">{{ tx('详情') }}</m-button>
             </template>
           </m-table>
         </div>
@@ -115,8 +115,10 @@
 <script setup>
 import { computed, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useLocale } from '../i18n'
 
 const router = useRouter()
+const { locale, tx } = useLocale()
 const pageNum = ref(1)
 const pageSize = 10
 const loading = ref(false)
@@ -328,18 +330,18 @@ const filteredOrders = computed(() => {
 const tableData = computed(() => filteredOrders.value.slice((pageNum.value - 1) * pageSize, pageNum.value * pageSize))
 
 const columns = computed(() => [
-  { dataIndex: 'orderNo', title: '单据编码', width: 170, fixed: 'left' },
-  { dataIndex: 'title', title: '单据名称', width: 260 },
-  { dataIndex: 'classification', title: '工作分类', width: 220 },
-  { dataIndex: 'status', title: '状态', width: 180 },
-  { dataIndex: 'currentNode', title: '当前节点', width: 190 },
-  { dataIndex: 'owner', title: '当前责任人', width: 140 },
-  { dataIndex: 'creator', title: '创建人', width: 120 },
-  { dataIndex: 'createdAt', title: '创建时间', width: 170 },
-  { dataIndex: 'statusChangedAt', title: '状态变更时间', width: 170 },
-  { dataIndex: 'completedAt', title: '完结时间', width: 170 },
-  { dataIndex: 'source', title: '单据来源', width: 150 },
-  { dataIndex: 'action', title: '操作', width: 88, fixed: 'right' }
+  { dataIndex: 'orderNo', title: tx('单据编码'), width: 170, fixed: 'left' },
+  { dataIndex: 'title', title: tx('单据名称'), width: 260 },
+  { dataIndex: 'classification', title: tx('工作分类'), width: 220 },
+  { dataIndex: 'status', title: tx('状态'), width: 180 },
+  { dataIndex: 'currentNode', title: tx('当前节点'), width: 190 },
+  { dataIndex: 'owner', title: tx('当前责任人'), width: 140 },
+  { dataIndex: 'creator', title: tx('创建人'), width: 120 },
+  { dataIndex: 'createdAt', title: tx('创建时间'), width: 170 },
+  { dataIndex: 'statusChangedAt', title: tx('状态变更时间'), width: 170 },
+  { dataIndex: 'completedAt', title: tx('完结时间'), width: 170 },
+  { dataIndex: 'source', title: tx('单据来源'), width: 150 },
+  { dataIndex: 'action', title: tx('操作'), width: 88, fixed: 'right' }
 ])
 
 function uniqueOptions(rows, field) {
@@ -367,7 +369,8 @@ function includesText(value, keyword) {
 }
 
 function statusLabel(value) {
-  return [...engineeringStatusOptions, ...baseStatusOptions].find(item => item.value === value)?.label || value
+  const label = [...engineeringStatusOptions, ...baseStatusOptions].find(item => item.value === value)?.label || value
+  return tx(label)
 }
 
 function statusTagType(value) {

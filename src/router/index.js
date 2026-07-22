@@ -35,11 +35,14 @@ const routes = [
     component: () => import('../views/WorkflowConfig.vue'),
     meta: {
       topbarType: 'regular',
-      breadcrumb: [{ label: '配置中心' }, { label: '工作流程配置' }],
+      breadcrumb: [
+        { label: '配置中心', i18nKey: 'navigation.configCenter' },
+        { label: '工作流程配置', i18nKey: 'navigation.workflowConfig' }
+      ],
       tabs: [
-        { key: 'classifications', label: '工作单据配置' },
-        { key: 'workflows', label: '工作流程配置' },
-        { key: 'orders', label: '工作单据管理' }
+        { key: 'classifications', label: '工作单据配置', i18nKey: 'navigation.workOrderConfig' },
+        { key: 'workflows', label: '工作流程配置', i18nKey: 'navigation.workflowConfig' },
+        { key: 'orders', label: '工作单据管理', i18nKey: 'navigation.workOrderManagement' }
       ]
     }
   },
@@ -49,11 +52,14 @@ const routes = [
     component: () => import('../views/WorkOrderList.vue'),
     meta: {
       topbarType: 'regular',
-      breadcrumb: [{ label: '单据中心' }, { label: '工作单据管理' }],
+      breadcrumb: [
+        { label: '单据中心', i18nKey: 'navigation.documentCenter' },
+        { label: '工作单据管理', i18nKey: 'navigation.workOrderManagement' }
+      ],
       tabs: [
-        { key: 'classifications', label: '工作单据配置' },
-        { key: 'workflows', label: '工作流程配置' },
-        { key: 'orders', label: '工作单据管理' }
+        { key: 'classifications', label: '工作单据配置', i18nKey: 'navigation.workOrderConfig' },
+        { key: 'workflows', label: '工作流程配置', i18nKey: 'navigation.workflowConfig' },
+        { key: 'orders', label: '工作单据管理', i18nKey: 'navigation.workOrderManagement' }
       ]
     }
   },
@@ -63,11 +69,14 @@ const routes = [
     component: () => import('../views/WorkOrderDetail.vue'),
     meta: {
       topbarType: 'regular',
-      breadcrumb: [{ label: '单据中心' }, { label: '工作单据详情' }],
+      breadcrumb: [
+        { label: '单据中心', i18nKey: 'navigation.documentCenter' },
+        { label: '工作单据详情', i18nKey: 'navigation.workOrderDetail' }
+      ],
       tabs: [
-        { key: 'classifications', label: '工作单据配置' },
-        { key: 'workflows', label: '工作流程配置' },
-        { key: 'orders', label: '工作单据管理' }
+        { key: 'classifications', label: '工作单据配置', i18nKey: 'navigation.workOrderConfig' },
+        { key: 'workflows', label: '工作流程配置', i18nKey: 'navigation.workflowConfig' },
+        { key: 'orders', label: '工作单据管理', i18nKey: 'navigation.workOrderManagement' }
       ]
     }
   }

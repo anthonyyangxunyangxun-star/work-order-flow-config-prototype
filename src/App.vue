@@ -14,15 +14,15 @@ const { t } = useLocale()
 //   meta.tabs:       [{ key, label }, ...]                 仅 regular 类型
 //   meta.pageTitle:  string                                仅 standalone 类型
 const topbarType = computed(() => route.meta?.topbarType || 'regular')
-const localizationEnabled = computed(() => route.name === 'classifications')
+const localizationEnabled = true
 const localizeItems = items => items.map(item => ({
   ...item,
-  label: localizationEnabled.value && item.i18nKey ? t(item.i18nKey) : item.label
+  label: item.i18nKey ? t(item.i18nKey) : item.label
 }))
 const breadcrumb = computed(() => localizeItems(route.meta?.breadcrumb || []))
 const tabs = computed(() => localizeItems(route.meta?.tabs || []))
 const pageTitle = computed(() => (
-  localizationEnabled.value && route.meta?.pageTitleI18nKey
+  route.meta?.pageTitleI18nKey
     ? t(route.meta.pageTitleI18nKey)
     : route.meta?.pageTitle || ''
 ))

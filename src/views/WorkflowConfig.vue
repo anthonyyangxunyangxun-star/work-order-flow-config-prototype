@@ -4,28 +4,28 @@
       <aside class="workflow-left-panel">
         <header class="panel-header">
           <div>
-            <h2>工作流程列表</h2>
+            <h2>{{ tx('工作流程列表') }}</h2>
           </div>
           <div class="list-actions">
             <template v-if="batchPublishMode">
-              <m-button type="default" size="small" @click="cancelBatchPublish">取消</m-button>
-              <m-button type="primary" size="small" :disabled="publishSelectedCount === 0" @click="publishSelectedWorkflows">发布选中</m-button>
+              <m-button type="default" size="small" @click="cancelBatchPublish">{{ tx('取消') }}</m-button>
+              <m-button type="primary" size="small" :disabled="publishSelectedCount === 0" @click="publishSelectedWorkflows">{{ tx('发布选中') }}</m-button>
             </template>
             <template v-else>
-              <m-button type="default" size="small" @click="startBatchPublish">批量发布</m-button>
-              <m-button type="primary" size="small" @click="openCreateWorkflowModal">新建流程</m-button>
+              <m-button type="default" size="small" @click="startBatchPublish">{{ tx('批量发布') }}</m-button>
+              <m-button type="primary" size="small" @click="openCreateWorkflowModal">{{ tx('新建流程') }}</m-button>
             </template>
           </div>
         </header>
 
         <div class="workflow-list-tools">
-          <m-search v-model="workflowKeyword" :width="'100%'" placeholder="搜索流程名称" />
+          <m-search v-model="workflowKeyword" :width="'100%'" :placeholder="tx('搜索流程名称')" />
           <m-select
             v-model="workflowFilter.classification"
             :options="toSelectOptions(classificationOptions)"
-            prefix="工作分类："
+            :prefix="tx('工作分类：')"
             style="width: 100%;"
-            placeholder="请选择"
+            :placeholder="tx('请选择')"
             clearable
           />
         </div>
@@ -34,8 +34,8 @@
           <section v-for="group in workflowTree" :key="group.value" class="tree-group">
             <header class="tree-group-head">
               <div>
-                <strong>{{ group.label }}</strong>
-                <span>{{ group.flowCount }} 个流程</span>
+                <strong>{{ tx(group.label) }}</strong>
+                <span>{{ tx('{count} 个流程', { count: group.flowCount }) }}</span>
               </div>
             </header>
             <div class="tree-children">
@@ -61,7 +61,7 @@
                     :disabled="workflows.length <= 1"
                     @click.stop="requestDeleteWorkflow(workflow)"
                   >
-                    删除
+                    {{ tx('删除') }}
                   </m-button>
                 </div>
               </article>
@@ -76,8 +76,8 @@
             <h2>{{ selectedWorkflow.workflowName }}</h2>
           </div>
           <div class="canvas-actions">
-            <m-button type="default" size="small" @click="refreshCanvas">刷新画布</m-button>
-            <m-button type="default" size="small" @click="openValidationModal">校验流程</m-button>
+            <m-button type="default" size="small" @click="refreshCanvas">{{ tx('刷新画布') }}</m-button>
+            <m-button type="default" size="small" @click="openValidationModal">{{ tx('校验流程') }}</m-button>
           </div>
         </header>
 
@@ -138,7 +138,7 @@
                 :class="`route-link-card--${label.kind}`"
                 :style="{ left: `${label.x}px`, top: `${label.y}px` }"
               >
-                <strong>{{ label.text }}</strong>
+                <strong>{{ tx(label.text) }}</strong>
               </span>
               <template v-for="nodeLayout in flowLayout.nodes" :key="nodeLayout.node.nodeCode">
                 <article
@@ -157,16 +157,16 @@
                     <span class="node-type-tag" :class="`node-type-tag--${nodeLayout.node.nodeType}`">
                       {{ nodeTypeLabel(nodeLayout.node.nodeType) }}
                     </span>
-                    <span v-if="isCustomDiagramNode(nodeLayout.node)" class="custom-node-badge">【自定义】</span>
+                    <span v-if="isCustomDiagramNode(nodeLayout.node)" class="custom-node-badge">{{ tx('【自定义】') }}</span>
                     <span
                       v-if="flowNodeExecutorText(nodeLayout.node)"
                       class="node-executor-line"
-                      :title="`执行人：${flowNodeExecutorText(nodeLayout.node)}`"
+                      :title="tx('{label}：{value}', { label: tx('执行人'), value: flowNodeExecutorText(nodeLayout.node) })"
                     >
-                      执行人：{{ flowNodeExecutorText(nodeLayout.node) }}
+                      {{ tx('{label}：{value}', { label: tx('执行人'), value: flowNodeExecutorText(nodeLayout.node) }) }}
                     </span>
                   </div>
-                  <m-tag v-if="!nodeLayout.node.enabled" type="canceled">停用</m-tag>
+                  <m-tag v-if="!nodeLayout.node.enabled" type="canceled">{{ tx('停用') }}</m-tag>
                 </article>
               </template>
             </div>
@@ -177,32 +177,32 @@
       <aside class="workflow-right-panel">
         <header class="panel-header panel-header--right">
           <div>
-            <h2>流程业务配置</h2>
+            <h2>{{ tx('流程业务配置') }}</h2>
           </div>
-          <m-tag v-if="strategyDirty" type="processing">未保存</m-tag>
+          <m-tag v-if="strategyDirty" type="processing">{{ tx('未保存') }}</m-tag>
         </header>
 
-        <m-tabs v-model="activeWorkflowConfigTab" :data="workflowConfigTabs" class="workflow-config-tabs" />
+        <m-tabs v-model="activeWorkflowConfigTab" :data="localizeOptions(workflowConfigTabs)" class="workflow-config-tabs" />
 
         <div class="property-scroll">
           <section v-if="activeWorkflowConfigTab === 'basic'" class="property-card">
-            <h3>基础信息</h3>
+            <h3>{{ tx('基础信息') }}</h3>
             <m-form :model="selectedWorkflow" label-position="left" label-width="96px">
-              <m-form-item label="流程名称" required>
+              <m-form-item :label="tx('流程名称')" required>
                 <input
                   :value="selectedWorkflow.workflowName"
                   class="workflow-name-input"
-                  placeholder="请输入流程名称"
+                  :placeholder="tx('请输入流程名称')"
                   @input="changeWorkflowName"
                   @change="changeWorkflowName"
                   @blur="changeWorkflowName"
                 />
               </m-form-item>
-              <m-form-item label="适用条件" class="condition-form-item">
+              <m-form-item :label="tx('适用条件')" class="condition-form-item">
                 <div class="condition-builder">
                   <div v-if="selectedWorkflow.conditionRules.length === 0" class="condition-empty-state">
-                    <span>未配置适用条件，作为该工作类型的默认流程。</span>
-                    <m-button type="link" size="small" @click="addConditionRuleAfter(-1, selectedWorkflow)">添加条件</m-button>
+                    <span>{{ tx('未配置适用条件，作为该工作类型的默认流程。') }}</span>
+                    <m-button type="link" size="small" @click="addConditionRuleAfter(-1, selectedWorkflow)">{{ tx('添加条件') }}</m-button>
                   </div>
                   <div v-for="(rule, index) in selectedWorkflow.conditionRules" :key="rule.id" class="condition-rule">
                     <div class="condition-relation-cell">
@@ -211,17 +211,17 @@
                         v-model="rule.relation"
                         :options="toSelectOptions(relationOptions)"
                         :size="96"
-                        placeholder="关系"
+                        :placeholder="tx('关系')"
                         @change="changeConditionValue(rule, selectedWorkflow)"
                       />
-                      <span v-else class="condition-relation-placeholder">当</span>
+                      <span v-else class="condition-relation-placeholder">{{ tx('当') }}</span>
                     </div>
                     <div class="condition-field-cell">
                       <m-select
                         v-model="rule.field"
                         :options="toSelectOptions(conditionFieldOptionsFor(selectedWorkflow))"
                         :size="136"
-                        placeholder="条件主体"
+                        :placeholder="tx('条件主体')"
                         @change="changeConditionField(rule, selectedWorkflow)"
                       />
                     </div>
@@ -230,7 +230,7 @@
                         v-model="rule.operator"
                         :options="toSelectOptions(conditionOperatorOptions)"
                         :size="104"
-                        placeholder="运算符"
+                        :placeholder="tx('运算符')"
                         @change="changeConditionValue(rule, selectedWorkflow)"
                       />
                     </div>
@@ -240,18 +240,18 @@
                         v-model="rule.value"
                         :options="toSelectOptions(conditionValueOptions(rule.field, selectedWorkflow))"
                         :size="248"
-                        placeholder="值"
+                        :placeholder="tx('值')"
                         multiple
                         has-confirm
                         has-check-all
                         mode="multiple"
                         @change="changeConditionValue(rule, selectedWorkflow)"
                       />
-                      <m-input v-else v-model="rule.value" :width="248" placeholder="请输入值" @update:model-value="changeConditionValue(rule, selectedWorkflow)" />
+                      <m-input v-else v-model="rule.value" :width="248" :placeholder="tx('请输入值')" @update:model-value="changeConditionValue(rule, selectedWorkflow)" />
                     </div>
                     <div class="condition-actions">
-                      <m-button type="link" size="small" @click="addConditionRuleAfter(index, selectedWorkflow)">添加</m-button>
-                      <m-button type="link" size="small" @click="removeConditionRule(index, selectedWorkflow)">删除</m-button>
+                      <m-button type="link" size="small" @click="addConditionRuleAfter(index, selectedWorkflow)">{{ tx('添加') }}</m-button>
+                      <m-button type="link" size="small" @click="removeConditionRule(index, selectedWorkflow)">{{ tx('删除') }}</m-button>
                     </div>
                   </div>
                 </div>
@@ -262,8 +262,8 @@
           <section v-if="activeWorkflowConfigTab === 'status'" class="property-card">
             <div class="status-rule-block">
               <div class="status-rule-block-head">
-                <strong>流程状态字典</strong>
-                <m-button type="link" size="small" @click="addWorkflowStatus">新增状态</m-button>
+                <strong>{{ tx('流程状态字典') }}</strong>
+                <m-button type="link" size="small" @click="addWorkflowStatus">{{ tx('新增状态') }}</m-button>
               </div>
               <div class="workflow-status-list">
                 <article
@@ -271,16 +271,16 @@
                   :key="status.id"
                   class="workflow-status-row"
 	                >
-                  <m-input v-model="status.statusName" :width="'100%'" placeholder="状态名称" @update:model-value="changeWorkflowStatusDefinition" />
-                  <m-input v-model="status.statusCode" :width="'100%'" placeholder="状态编码" @update:model-value="changeWorkflowStatusDefinition" />
-                  <m-button type="link" size="small" @click="removeWorkflowStatus(status)">删除</m-button>
+                  <m-input v-model="status.statusName" :width="'100%'" :placeholder="tx('状态名称')" @update:model-value="changeWorkflowStatusDefinition" />
+                  <m-input v-model="status.statusCode" :width="'100%'" :placeholder="tx('状态编码')" @update:model-value="changeWorkflowStatusDefinition" />
+                  <m-button type="link" size="small" @click="removeWorkflowStatus(status)">{{ tx('删除') }}</m-button>
                 </article>
               </div>
             </div>
 
             <div class="status-rule-block">
               <div class="status-rule-block-head">
-                <strong>状态流转规则</strong>
+                <strong>{{ tx('状态流转规则') }}</strong>
               </div>
               <div class="status-transition-list">
                 <article
@@ -291,7 +291,7 @@
 	                  <header class="status-transition-head">
 	                    <div class="status-transition-title-row">
 	                      <div class="status-rule-title">
-	                        <span>流程状态</span>
+	                        <span>{{ tx('流程状态') }}</span>
 	                        <strong>{{ status.statusName }}</strong>
 	                        <code>{{ status.statusCode }}</code>
 	                      </div>
@@ -303,43 +303,43 @@
 	                      :key="condition.id"
 	                      class="status-condition-row"
 	                    >
-	                      <span class="status-condition-relation">{{ conditionIndex === 0 ? '当' : relationLabel(rule.logicMode === 'any' ? 'OR' : 'AND') }}</span>
+	                      <span class="status-condition-relation">{{ conditionIndex === 0 ? tx('当') : relationLabel(rule.logicMode === 'any' ? 'OR' : 'AND') }}</span>
 	                      <m-select
 	                        v-model="condition.nodeCode"
 	                        :options="toSelectOptions(statusRuleNodeOptions)"
 	                        style="width: 100%;"
-	                        placeholder="选择节点"
+	                        :placeholder="tx('选择节点')"
                         @change="changeStatusRuleConditionNode(condition)"
                       />
                       <m-select
 	                        v-model="condition.outputResult"
 	                        :options="toSelectOptions(outputOptionsForNodeCode(condition.nodeCode))"
 	                        style="width: 100%;"
-	                        placeholder="路由状态"
+	                        :placeholder="tx('路由状态')"
 	                        @change="markStrategyDirty"
 	                      />
-                      <m-button type="link" size="small" @click="removeStatusRuleCondition(rule, conditionIndex)">删除条件</m-button>
+                      <m-button type="link" size="small" @click="removeStatusRuleCondition(rule, conditionIndex)">{{ tx('删除条件') }}</m-button>
                     </div>
                   </div>
                   <footer class="status-transition-footer">
                     <span>{{ statusTransitionRuleText(rule, status) }}</span>
-                    <m-button type="link" size="small" @click="addStatusRuleCondition(rule)">添加条件</m-button>
+                    <m-button type="link" size="small" @click="addStatusRuleCondition(rule)">{{ tx('添加条件') }}</m-button>
                   </footer>
                 </article>
-                <p v-if="statusRuleGroups.length === 0" class="empty-hint">请先维护流程状态字典。</p>
+                <p v-if="statusRuleGroups.length === 0" class="empty-hint">{{ tx('请先维护流程状态字典。') }}</p>
               </div>
             </div>
           </section>
 
           <section v-if="activeWorkflowConfigTab === 'nodes'" class="property-card">
             <header class="property-card-head">
-              <h3>节点配置</h3>
+              <h3>{{ tx('节点配置') }}</h3>
             </header>
 
             <div class="node-config-section">
               <header class="node-config-section-head">
-                <strong>工作阶段节点</strong>
-                <m-button type="link" size="small" @click="addNode">添加工作阶段</m-button>
+                <strong>{{ tx('工作阶段节点') }}</strong>
+                <m-button type="link" size="small" @click="addNode">{{ tx('添加工作阶段') }}</m-button>
               </header>
               <div class="stage-list">
                 <article
@@ -351,41 +351,41 @@
                   <template v-if="isCustomStageStrategy(stage)">
                     <div class="approval-config-fields stage-config-fields">
                       <label class="config-field">
-                        <span>节点名称</span>
+                        <span>{{ tx('节点名称') }}</span>
                         <m-input
                           v-model="stage.stageName"
                           :width="'100%'"
-                          placeholder="请输入节点名称"
+                          :placeholder="tx('请输入节点名称')"
                           @update:model-value="changeCustomStageName(stage)"
                         />
                       </label>
                       <label class="config-field">
-                        <span>节点选择</span>
+                        <span>{{ tx('节点选择') }}</span>
                         <m-select
                           v-model="stage.targetStageCode"
                           :options="toSelectOptions(stageInsertTargetOptions(stage))"
                           style="width: 100%;"
-                          placeholder="请选择流程节点"
+                          :placeholder="tx('请选择流程节点')"
                           @change="changeCustomStageInsertRule(stage)"
                         />
                       </label>
                       <label class="config-field">
-                        <span>插入位置</span>
+                        <span>{{ tx('插入位置') }}</span>
                         <m-select
                           v-model="stage.position"
                           :options="toSelectOptions(approvalPositionOptions)"
                           style="width: 100%;"
-                          placeholder="请选择节点前或节点后"
+                          :placeholder="tx('请选择节点前或节点后')"
                           @change="changeCustomStageInsertRule(stage)"
                         />
                       </label>
                     </div>
                     <div class="strategy-row node-card-action-row">
-                      <span>节点启用</span>
+                      <span>{{ tx('节点启用') }}</span>
                       <div class="node-config-actions">
                         <m-switch v-model="stage.enabledSwitch" @change="changeStageEnabled(stage)" />
-                        <m-button type="link" size="small" :disabled="stage.enabledSwitch !== 'checked'" @click="openStageNodeDetail(stage)">详情</m-button>
-                        <m-button v-if="isCustomStageStrategy(stage)" type="link" size="small" @click="removeStageNode(stage)">删除</m-button>
+                        <m-button type="link" size="small" :disabled="stage.enabledSwitch !== 'checked'" @click="openStageNodeDetail(stage)">{{ tx('详情') }}</m-button>
+                        <m-button v-if="isCustomStageStrategy(stage)" type="link" size="small" @click="removeStageNode(stage)">{{ tx('删除') }}</m-button>
                       </div>
                     </div>
                   </template>
@@ -397,11 +397,11 @@
                     </header>
 
                     <div class="strategy-row">
-                      <span>节点启用</span>
+                      <span>{{ tx('节点启用') }}</span>
                       <div class="node-config-actions">
                         <m-switch v-model="stage.enabledSwitch" @change="changeStageEnabled(stage)" />
-                        <m-button type="link" size="small" :disabled="stage.enabledSwitch !== 'checked'" @click="openStageNodeDetail(stage)">详情</m-button>
-                      <m-button v-if="isCustomStageStrategy(stage)" type="link" size="small" @click="removeStageNode(stage)">删除</m-button>
+                        <m-button type="link" size="small" :disabled="stage.enabledSwitch !== 'checked'" @click="openStageNodeDetail(stage)">{{ tx('详情') }}</m-button>
+                      <m-button v-if="isCustomStageStrategy(stage)" type="link" size="small" @click="removeStageNode(stage)">{{ tx('删除') }}</m-button>
                     </div>
                   </div>
                 </template>
@@ -411,46 +411,46 @@
 
             <div class="node-config-section">
               <header class="node-config-section-head">
-                <strong>审批节点</strong>
-                <m-button type="link" size="small" @click="addApprovalConfig">添加审批节点</m-button>
+                <strong>{{ tx('审批节点') }}</strong>
+                <m-button type="link" size="small" @click="addApprovalConfig">{{ tx('添加审批节点') }}</m-button>
               </header>
               <div class="config-list">
                 <article v-for="config in selectedWorkflow.approvalConfigs" :key="config.id" class="config-card">
                   <div class="approval-config-fields">
                     <label class="config-field">
-                      <span>审批节点名称</span>
+                      <span>{{ tx('审批节点名称') }}</span>
                       <m-input
                         v-model="config.approvalNodeName"
                         :width="'100%'"
-                        placeholder="请输入审批节点名称"
+                        :placeholder="tx('请输入审批节点名称')"
                         @update:model-value="changeApprovalConfig(config)"
                       />
                     </label>
                     <label class="config-field">
-                      <span>节点选择</span>
-                      <m-select v-model="config.targetStageCode" :options="toSelectOptions(approvalTargetOptionsForConfig(config))" style="width: 100%;" placeholder="请选择流程节点" @change="changeApprovalConfig(config)" />
+                      <span>{{ tx('节点选择') }}</span>
+                      <m-select v-model="config.targetStageCode" :options="toSelectOptions(approvalTargetOptionsForConfig(config))" style="width: 100%;" :placeholder="tx('请选择流程节点')" @change="changeApprovalConfig(config)" />
                     </label>
                     <label class="config-field">
-                      <span>插入位置</span>
-                      <m-select v-model="config.position" :options="toSelectOptions(approvalPositionOptions)" style="width: 100%;" placeholder="请选择节点前或节点后" @change="changeApprovalConfig(config)" />
+                      <span>{{ tx('插入位置') }}</span>
+                      <m-select v-model="config.position" :options="toSelectOptions(approvalPositionOptions)" style="width: 100%;" :placeholder="tx('请选择节点前或节点后')" @change="changeApprovalConfig(config)" />
                     </label>
                   </div>
                   <div class="strategy-row node-card-action-row">
-                    <span>节点启用</span>
+                    <span>{{ tx('节点启用') }}</span>
                     <div class="node-config-actions">
                       <m-switch v-model="config.enabledSwitch" @change="changeApprovalConfig(config)" />
-                      <m-button type="link" size="small" :disabled="config.enabledSwitch !== 'checked'" @click="openApprovalNodeDetail(config)">详情</m-button>
-                      <m-button type="link" size="small" @click="removeApprovalConfig(config.id)">删除</m-button>
+                      <m-button type="link" size="small" :disabled="config.enabledSwitch !== 'checked'" @click="openApprovalNodeDetail(config)">{{ tx('详情') }}</m-button>
+                      <m-button type="link" size="small" @click="removeApprovalConfig(config.id)">{{ tx('删除') }}</m-button>
                     </div>
                   </div>
                 </article>
-                <p v-if="selectedWorkflow.approvalConfigs.length === 0" class="empty-hint">暂未加入审批节点。</p>
+                <p v-if="selectedWorkflow.approvalConfigs.length === 0" class="empty-hint">{{ tx('暂未加入审批节点。') }}</p>
               </div>
             </div>
 
             <div v-if="selectedWorkflow.systemNodeConfigs.length > 0" class="node-config-section">
               <header class="node-config-section-head">
-                <strong>系统节点</strong>
+                <strong>{{ tx('系统节点') }}</strong>
               </header>
               <div class="config-list">
                 <article v-for="config in selectedWorkflow.systemNodeConfigs" :key="config.id" class="config-card">
@@ -460,7 +460,7 @@
                     </div>
                     <div class="node-config-actions">
                       <m-switch v-model="config.enabledSwitch" @change="changeSystemNodeConfig(config)" />
-                      <m-button type="link" size="small" :disabled="config.enabledSwitch !== 'checked'" @click="openSystemNodeDetail(config)">详情</m-button>
+                      <m-button type="link" size="small" :disabled="config.enabledSwitch !== 'checked'" @click="openSystemNodeDetail(config)">{{ tx('详情') }}</m-button>
                     </div>
                   </div>
                 </article>
@@ -469,8 +469,8 @@
           </section>
 
           <section class="property-card property-actions">
-            <m-button type="default" @click="openValidationModal">校验</m-button>
-            <m-button type="primary" :loading="savingStrategy" @click="saveGlobalStrategy">保存业务配置</m-button>
+            <m-button type="default" @click="openValidationModal">{{ tx('校验') }}</m-button>
+            <m-button type="primary" :loading="savingStrategy" @click="saveGlobalStrategy">{{ tx('保存业务配置') }}</m-button>
           </section>
         </div>
       </aside>
@@ -478,52 +478,52 @@
       <section v-if="nodeDetailVisible" class="node-detail-panel">
         <header class="node-detail-head">
           <div>
-            <span class="panel-kicker">节点详情侧弹窗</span>
+            <span class="panel-kicker">{{ tx('节点详情侧弹窗') }}</span>
             <h2>{{ nodeDetailForm.nodeName }}</h2>
           </div>
-          <m-button type="link" @click="closeNodeDetail">关闭</m-button>
+          <m-button type="link" @click="closeNodeDetail">{{ tx('关闭') }}</m-button>
         </header>
 
         <div v-if="nodeDetailForm.nodeType === 'systemTask'" class="node-readonly-banner">
-          系统动作模板由产品或实施预置，可配置节点输出结果用于路由和单据状态规则。
+          {{ tx('系统动作模板由产品或实施预置，可配置节点输出结果用于路由和单据状态规则。') }}
         </div>
 
-        <m-tabs v-model="activeNodeDetailTab" :data="nodeDetailTabs" class="node-detail-tabs" />
+        <m-tabs v-model="activeNodeDetailTab" :data="localizeOptions(nodeDetailTabs)" class="node-detail-tabs" />
 
         <div class="node-detail-scroll">
           <template v-if="activeNodeDetailTab === 'basic'">
             <section class="property-card">
-              <h3>基础信息</h3>
+              <h3>{{ tx('基础信息') }}</h3>
               <m-form :model="nodeDetailForm" label-position="left" label-width="96px">
-                <m-form-item label="节点名称" required>
-                  <m-input v-model="nodeDetailForm.nodeName" :width="240" placeholder="请输入节点名称" />
+                <m-form-item :label="tx('节点名称')" required>
+                  <m-input v-model="nodeDetailForm.nodeName" :width="240" :placeholder="tx('请输入节点名称')" />
                 </m-form-item>
-                <m-form-item label="节点类型">
+                <m-form-item :label="tx('节点类型')">
                   <m-input :model-value="nodeTypeLabel(nodeDetailForm.nodeType)" :width="240" disabled />
                 </m-form-item>
-                <m-form-item v-if="nodeDetailForm.nodeType === 'approvalFlow'" label="审批流程">
-                  <m-select v-model="nodeDetailForm.approvalFlow" :options="toSelectOptions(approvalFlowOptions)" style="width: 240px;" placeholder="请选择审批流程" />
+                <m-form-item v-if="nodeDetailForm.nodeType === 'approvalFlow'" :label="tx('审批流程')">
+                  <m-select v-model="nodeDetailForm.approvalFlow" :options="toSelectOptions(approvalFlowOptions)" style="width: 240px;" :placeholder="tx('请选择审批流程')" />
                 </m-form-item>
               </m-form>
             </section>
 
             <section class="property-card">
               <header class="property-card-head">
-                <h3>进入条件</h3>
-                <m-button type="link" size="small" @click="addEntryRule">添加进入条件</m-button>
+                <h3>{{ tx('进入条件') }}</h3>
+                <m-button type="link" size="small" @click="addEntryRule">{{ tx('添加进入条件') }}</m-button>
               </header>
               <div v-if="nodeDetailForm.entryRules.length > 1" class="entry-logic-row">
-                <span>满足方式</span>
+                <span>{{ tx('满足方式') }}</span>
                 <m-select
                   v-model="nodeDetailForm.entryLogicMode"
                   :options="toSelectOptions(entryLogicOptions)"
                   style="width: 176px;"
-                  placeholder="请选择满足方式"
+                  :placeholder="tx('请选择满足方式')"
                 />
               </div>
               <div v-if="nodeDetailForm.entryRules.length > 0" class="route-rule-list">
                 <article v-for="(rule, ruleIndex) in nodeDetailForm.entryRules" :key="rule.id" class="route-rule-item">
-                  <m-button class="route-rule-delete" type="link" size="small" @click="removeEntryRule(ruleIndex)">删除条件</m-button>
+                  <m-button class="route-rule-delete" type="link" size="small" @click="removeEntryRule(ruleIndex)">{{ tx('删除条件') }}</m-button>
                   <p class="route-rule-sentence">
                     <span class="entry-relation-chip">{{ entryRelationLabel(ruleIndex) }}</span>
                     {{ entryRuleExpression(rule, nodeDetailForm) }}
@@ -531,30 +531,30 @@
                   <div v-if="rule.editable" class="route-condition-editor">
                     <div class="route-rule-controls">
                       <label class="route-rule-control">
-                        <span>来源节点</span>
+                        <span>{{ tx('来源节点') }}</span>
                         <m-select
                           v-model="rule.sourceNodeCode"
                           :options="toSelectOptions(entrySourceNodeOptions)"
                           :size="'100%'"
                           style="width: 100%;"
-                          placeholder="请选择来源节点"
+                          :placeholder="tx('请选择来源节点')"
                           @change="changeEntryRuleSource(rule)"
                         />
                       </label>
                       <label class="route-rule-control route-rule-control--status">
-                        <span>输出结果</span>
+                        <span>{{ tx('输出结果') }}</span>
                         <m-select
                           v-model="rule.sourceStatus"
                           :options="toSelectOptions(entryOutputStatusOptions(rule))"
                           :size="'100%'"
                           style="width: 100%;"
-                          placeholder="请选择输出结果"
+                          :placeholder="tx('请选择输出结果')"
                         />
                       </label>
-                      <m-button type="link" size="small" @click="addEntryCondition(ruleIndex)">添加业务条件</m-button>
+                      <m-button type="link" size="small" @click="addEntryCondition(ruleIndex)">{{ tx('添加业务条件') }}</m-button>
                     </div>
                     <div v-if="rule.conditions.length === 0" class="route-condition-empty">
-                      <span>未配置额外条件。</span>
+                      <span>{{ tx('未配置额外条件。') }}</span>
                     </div>
                     <div v-for="(condition, conditionIndex) in rule.conditions" :key="condition.id" class="route-condition-row">
                       <div class="route-condition-relation">
@@ -563,73 +563,73 @@
                           v-model="condition.relation"
                           :options="toSelectOptions(relationOptions)"
                           :size="64"
-                          placeholder="关系"
+                          :placeholder="tx('关系')"
                         />
-                        <span v-else>且</span>
+                        <span v-else>{{ tx('且') }}</span>
                       </div>
                       <m-select
                         v-model="condition.field"
                         :options="toSelectOptions(routeConditionFieldOptions)"
                         :size="132"
-                        placeholder="条件主体"
+                        :placeholder="tx('条件主体')"
                         @change="changeRouteConditionField(condition)"
                       />
                       <m-select
                         v-model="condition.operator"
                         :options="toSelectOptions(conditionOperatorOptions)"
                         :size="96"
-                        placeholder="运算符"
+                        :placeholder="tx('运算符')"
                       />
                       <m-select
                         v-if="conditionValueOptions(condition.field, selectedWorkflow).length > 0"
                         v-model="condition.value"
                         :options="toSelectOptions(conditionValueOptions(condition.field, selectedWorkflow))"
                         :size="148"
-                        placeholder="值"
+                        :placeholder="tx('值')"
                         multiple
                         has-confirm
                         has-check-all
                         mode="multiple"
                       />
-                      <m-input v-else v-model="condition.value" :width="148" placeholder="请输入值" />
-                      <m-button type="link" size="small" @click="removeEntryCondition(ruleIndex, conditionIndex)">删除</m-button>
+                      <m-input v-else v-model="condition.value" :width="148" :placeholder="tx('请输入值')" />
+                      <m-button type="link" size="small" @click="removeEntryCondition(ruleIndex, conditionIndex)">{{ tx('删除') }}</m-button>
                     </div>
                   </div>
-                  <div v-else class="route-generated-hint">{{ rule.generatedHint || '由条件路由自动生成，随上游规则同步更新。' }}</div>
+                  <div v-else class="route-generated-hint">{{ rule.generatedHint || tx('由条件路由自动生成，随上游规则同步更新。') }}</div>
                 </article>
               </div>
-              <p v-else class="empty-hint">当前节点暂无进入条件，请添加来源节点与输出结果。</p>
+              <p v-else class="empty-hint">{{ tx('当前节点暂无进入条件，请添加来源节点与输出结果。') }}</p>
             </section>
 
             <section class="property-card">
               <header class="property-card-head">
-                <h3>输出影响范围</h3>
+                <h3>{{ tx('输出影响范围') }}</h3>
               </header>
               <div v-if="outputRouteImpacts.length > 0" class="route-impact-list">
                 <article v-for="impact in outputRouteImpacts" :key="impact.id" class="route-impact-item">
                   <strong>{{ impact.statusLabel }}</strong>
-                  <span>进入「{{ impact.targetName }}」{{ impact.conditionText ? `，且 ${impact.conditionText}` : '' }}</span>
+                  <span>{{ tx('进入「{name}」', { name: impact.targetName }) }}{{ impact.conditionText ? `, ${tx('且')} ${impact.conditionText}` : '' }}</span>
                 </article>
               </div>
-              <p v-else class="empty-hint">当前节点暂无输出影响。</p>
+              <p v-else class="empty-hint">{{ tx('当前节点暂无输出影响。') }}</p>
             </section>
           </template>
 
           <template v-else-if="activeNodeDetailTab === 'execution'">
             <section v-if="isExecutorConfigVisible(nodeDetailForm)" class="property-card">
-              <h3>执行人调度</h3>
+              <h3>{{ tx('执行人调度') }}</h3>
               <div class="executor-rule-list">
                 <div v-if="canConfigureNodeAssignment(nodeDetailForm)" class="execution-requirement-row">
                   <div class="execution-requirement-main">
                     <div>
-                      <strong>排程派工</strong>
-                      <span>开启后将在该工作阶段前生成 AI 或人工排程节点。</span>
+                      <strong>{{ tx('排程派工') }}</strong>
+                      <span>{{ tx('开启后将在该工作阶段前生成 AI 或人工排程节点。') }}</span>
                     </div>
                     <m-switch v-model="nodeDetailForm.assignmentEnabledSwitch" @change="changeNodeAssignmentEnabled" />
                   </div>
                   <div v-if="nodeDetailForm.assignmentEnabledSwitch === 'checked'" class="assignment-subform">
                     <div class="config-field config-field--inline">
-                      <span>派工方式</span>
+                      <span>{{ tx('派工方式') }}</span>
                       <div class="assignment-mode-options">
                         <button
                           type="button"
@@ -637,7 +637,7 @@
                           :class="{ 'assignment-mode-option--active': nodeDetailForm.assignmentMode === 'system' }"
                           @click="selectNodeAssignmentMode('system')"
                         >
-                          AI排程派工
+                          {{ tx('AI排程派工') }}
                         </button>
                         <button
                           type="button"
@@ -645,57 +645,57 @@
                           :class="{ 'assignment-mode-option--active': nodeDetailForm.assignmentMode === 'manual' }"
                           @click="selectNodeAssignmentMode('manual')"
                         >
-                          人工排程派工
+                          {{ tx('人工排程派工') }}
                         </button>
                       </div>
                     </div>
                     <div class="config-field config-field--inline">
-                      <span>执行人来源</span>
+                      <span>{{ tx('执行人来源') }}</span>
                       <m-select
                         v-model="nodeDetailForm.executorSource"
                         :options="toSelectOptions(executorSourceOptionsForNode(nodeDetailForm))"
                         style="width: 100%;"
                         disabled
-                        placeholder="继承排程派工结果"
+                        :placeholder="tx('继承排程派工结果')"
                       />
                     </div>
                   </div>
                   <div v-else-if="canConfigureExecutorSource(nodeDetailForm)" class="assignment-subform">
                     <div class="config-field config-field--inline">
-                      <span>执行人来源</span>
+                      <span>{{ tx('执行人来源') }}</span>
                       <m-select
                         v-model="nodeDetailForm.executorSource"
                         :options="toSelectOptions(executorSourceOptionsForNode(nodeDetailForm))"
                         style="width: 100%;"
-                        placeholder="请选择执行人来源"
+                        :placeholder="tx('请选择执行人来源')"
                         @change="changeExecutorSource"
                       />
                     </div>
                     <div v-if="nodeDetailForm.executorSource === 'specifiedNodeExecutor'" class="config-field config-field--inline">
-                      <span>来源节点</span>
+                      <span>{{ tx('来源节点') }}</span>
                       <m-select
                         v-model="nodeDetailForm.executorSourceNodeCode"
                         :options="toSelectOptions(executorSourceNodeOptions)"
                         style="width: 100%;"
-                        placeholder="请选择节点"
+                        :placeholder="tx('请选择节点')"
                       />
                     </div>
                     <div v-if="nodeDetailForm.executorSource === 'fixedRole'" class="config-field config-field--inline">
-                      <span>岗位</span>
+                      <span>{{ tx('岗位') }}</span>
                       <m-select
                         v-model="nodeDetailForm.fallbackExecutor"
                         :options="toSelectOptions(assignmentRoleOptions)"
                         style="width: 100%;"
-                        placeholder="请选择岗位"
+                        :placeholder="tx('请选择岗位')"
                       />
                     </div>
                     <div v-if="nodeDetailForm.executorSource === 'manualSelect'" class="config-field config-field--inline">
-                      <span>人员</span>
+                      <span>{{ tx('人员') }}</span>
                       <m-select
                         v-model="nodeDetailForm.executorPerson"
                         :options="toSelectOptions(assignmentPersonOptions)"
                         style="width: 100%;"
-                        placeholder="请选择人员"
+                        :placeholder="tx('请选择人员')"
                       />
                     </div>
                   </div>
@@ -703,37 +703,37 @@
                 <div v-else-if="canConfigureExecutorSource(nodeDetailForm)" class="execution-requirement-row">
                   <div class="execution-requirement-main">
                     <div>
-                      <strong>执行人来源</strong>
-                      <span>配置谁负责完成当前分配流转节点。</span>
+                      <strong>{{ tx('执行人来源') }}</strong>
+                      <span>{{ tx('配置谁负责完成当前分配流转节点。') }}</span>
                     </div>
                   </div>
                   <div class="assignment-subform">
                     <div class="config-field config-field--inline">
-                      <span>执行人来源</span>
+                      <span>{{ tx('执行人来源') }}</span>
                       <m-select
                         v-model="nodeDetailForm.executorSource"
                         :options="toSelectOptions(executorSourceOptionsForNode(nodeDetailForm))"
                         style="width: 100%;"
-                        placeholder="请选择执行人来源"
+                        :placeholder="tx('请选择执行人来源')"
                         @change="changeExecutorSource"
                       />
                     </div>
                     <div v-if="nodeDetailForm.executorSource === 'fixedRole'" class="config-field config-field--inline">
-                      <span>岗位</span>
+                      <span>{{ tx('岗位') }}</span>
                       <m-select
                         v-model="nodeDetailForm.fallbackExecutor"
                         :options="toSelectOptions(assignmentRoleOptions)"
                         style="width: 100%;"
-                        placeholder="请选择岗位"
+                        :placeholder="tx('请选择岗位')"
                       />
                     </div>
                     <div v-if="nodeDetailForm.executorSource === 'manualSelect'" class="config-field config-field--inline">
-                      <span>人员</span>
+                      <span>{{ tx('人员') }}</span>
                       <m-select
                         v-model="nodeDetailForm.executorPerson"
                         :options="toSelectOptions(assignmentPersonOptions)"
                         style="width: 100%;"
-                        placeholder="请选择人员"
+                        :placeholder="tx('请选择人员')"
                       />
                     </div>
                   </div>
@@ -742,23 +742,23 @@
             </section>
 
             <section v-if="isExecutionCapabilityVisible(nodeDetailForm)" class="property-card">
-              <h3>执行人可进行操作配置</h3>
+              <h3>{{ tx('执行人可进行操作配置') }}</h3>
               <div class="execution-requirement-list">
                 <div v-for="policy in workStageExecutionRequirementOptions" :key="policy.value" class="execution-requirement-row">
                   <div class="execution-requirement-main">
                     <div>
-                      <strong>{{ policy.label }}</strong>
+                      <strong>{{ tx(policy.label) }}</strong>
                       <span>{{ executionRequirementDescription(policy.value) }}</span>
                     </div>
                     <m-switch v-model="nodeDetailForm.actionPolicies[policy.value]" @change="changeActionPolicySwitch(policy.value)" />
                   </div>
                   <div v-if="requiresActionPolicyApproval(policy.value) && nodeDetailForm.actionPolicies[policy.value] === 'checked'" class="execution-approval-field">
-                    <span>审批流程</span>
+                    <span>{{ tx('审批流程') }}</span>
                     <m-select
                       v-model="nodeDetailForm.actionPolicyApprovalFlows[policy.value]"
                       :options="toSelectOptions(approvalFlowOptions)"
                       style="width: 100%;"
-                      placeholder="请选择审批流程"
+                      :placeholder="tx('请选择审批流程')"
                     />
                   </div>
                 </div>
@@ -767,8 +767,8 @@
 
             <section v-if="isExecutionResultConfigVisible(nodeDetailForm)" class="property-card">
               <header class="property-card-head">
-                <h3>执行结果配置</h3>
-                <m-button v-if="canAddExecutionResultOption(nodeDetailForm)" type="link" size="small" @click="addExecutionResultOption">新增其他结果</m-button>
+                <h3>{{ tx('执行结果配置') }}</h3>
+                <m-button v-if="canAddExecutionResultOption(nodeDetailForm)" type="link" size="small" @click="addExecutionResultOption">{{ tx('新增其他结果') }}</m-button>
               </header>
               <div class="execution-result-list">
                 <article
@@ -777,21 +777,21 @@
                   class="execution-result-row"
                 >
                   <label class="config-field">
-                    <span>结果名称</span>
+                    <span>{{ tx('结果名称') }}</span>
                     <m-input
                       v-model="option.label"
                       :width="'100%'"
                       :disabled="isPresetExecutionResultOption(option)"
-                      placeholder="请输入结果名称"
+                      :placeholder="tx('请输入结果名称')"
                     />
                   </label>
                   <label class="config-field">
-                    <span>结果编码</span>
+                    <span>{{ tx('结果编码') }}</span>
                     <m-input
                       v-model="option.value"
                       :width="'100%'"
                       :disabled="isPresetExecutionResultOption(option)"
-                      placeholder="请输入结果编码"
+                      :placeholder="tx('请输入结果编码')"
                       @update:model-value="changeExecutionResultCode(option)"
                     />
                   </label>
@@ -801,17 +801,17 @@
                     size="small"
                     @click="removeExecutionResultOption(index)"
                   >
-                    删除
+                    {{ tx('删除') }}
                   </m-button>
                 </article>
               </div>
             </section>
-            <p v-if="!isExecutorConfigVisible(nodeDetailForm) && !isExecutionCapabilityVisible(nodeDetailForm) && !isExecutionResultConfigVisible(nodeDetailForm)" class="empty-hint">当前节点不需要配置人工执行规则。</p>
+            <p v-if="!isExecutorConfigVisible(nodeDetailForm) && !isExecutionCapabilityVisible(nodeDetailForm) && !isExecutionResultConfigVisible(nodeDetailForm)" class="empty-hint">{{ tx('当前节点不需要配置人工执行规则。') }}</p>
           </template>
 
           <template v-else-if="activeNodeDetailTab === 'permissions'">
             <section v-if="isDataPermissionConfigVisible(nodeDetailForm)" class="property-card">
-              <h3>数据权限</h3>
+              <h3>{{ tx('数据权限') }}</h3>
               <div class="data-permission-board">
                 <article
                   v-for="section in dataPermissionSections"
@@ -821,8 +821,8 @@
                 >
                   <header class="data-permission-section-head">
                     <div>
-                      <strong>{{ section.label }}</strong>
-                      <span>{{ section.description }}</span>
+                      <strong>{{ tx(section.label) }}</strong>
+                      <span>{{ tx(section.description) }}</span>
                     </div>
                     <code>{{ dataPermissionGroupsByMode(section.value).length }}</code>
                   </header>
@@ -833,8 +833,8 @@
                       class="data-permission-item"
                     >
                       <div class="data-permission-copy">
-                        <strong>{{ group.label }}</strong>
-                        <span>{{ group.description }}</span>
+                        <strong>{{ tx(group.label) }}</strong>
+                        <span>{{ tx(group.description) }}</span>
                       </div>
                       <div class="data-permission-actions">
                         <button
@@ -844,72 +844,72 @@
                           class="data-permission-action"
                           @click="selectNodeDataPermission(group.value, option.value)"
                         >
-                          设为{{ option.label }}
+                          {{ tx('设为{option}', { option: tx(option.label) }) }}
                         </button>
                       </div>
                     </div>
                   </div>
-                  <p v-else class="data-permission-empty">暂无{{ section.label }}信息</p>
+                  <p v-else class="data-permission-empty">{{ tx('暂无{section}信息', { section: tx(section.label) }) }}</p>
                 </article>
               </div>
             </section>
             <section v-if="isCustomDataItemConfigVisible(nodeDetailForm)" class="property-card">
               <header class="property-card-head">
-                <h3>自定义数据项</h3>
-                <m-button type="link" size="small" @click="addCustomDataItem">新增自定义数据项</m-button>
+                <h3>{{ tx('自定义数据项') }}</h3>
+                <m-button type="link" size="small" @click="addCustomDataItem">{{ tx('新增自定义数据项') }}</m-button>
               </header>
               <div v-if="nodeDetailForm.customDataItems.length > 0" class="custom-data-item-list">
                 <article v-for="(item, index) in nodeDetailForm.customDataItems" :key="item.id" class="custom-data-item-row">
                   <label class="config-field">
-                    <span>输入项名称</span>
-                    <m-input v-model="item.itemName" :width="'100%'" placeholder="请输入输入项名称" />
+                    <span>{{ tx('输入项名称') }}</span>
+                    <m-input v-model="item.itemName" :width="'100%'" :placeholder="tx('请输入输入项名称')" />
                   </label>
                   <label class="config-field">
-                    <span>数据结构</span>
+                    <span>{{ tx('数据结构') }}</span>
                     <m-select
                       v-model="item.itemType"
                       :options="toSelectOptions(customDataItemTypeOptions)"
                       style="width: 100%;"
-                      placeholder="请选择数据结构"
+                      :placeholder="tx('请选择数据结构')"
                     />
                   </label>
-                  <m-button type="link" size="small" @click="removeCustomDataItem(index)">删除</m-button>
+                  <m-button type="link" size="small" @click="removeCustomDataItem(index)">{{ tx('删除') }}</m-button>
                 </article>
               </div>
-              <p v-else class="empty-hint">可为该自定义工作阶段新增现场记录、说明、照片或视频类输入项。</p>
+              <p v-else class="empty-hint">{{ tx('可为该自定义工作阶段新增现场记录、说明、照片或视频类输入项。') }}</p>
             </section>
-            <p v-if="!isDataPermissionConfigVisible(nodeDetailForm) && !isCustomDataItemConfigVisible(nodeDetailForm)" class="empty-hint">当前节点不配置执行页数据权限。</p>
+            <p v-if="!isDataPermissionConfigVisible(nodeDetailForm) && !isCustomDataItemConfigVisible(nodeDetailForm)" class="empty-hint">{{ tx('当前节点不配置执行页数据权限。') }}</p>
           </template>
         </div>
 
         <footer class="node-detail-actions">
-          <m-button type="default" @click="closeNodeDetail">取消</m-button>
-          <m-button type="primary" @click="saveNodeDetail">保存节点详情</m-button>
+          <m-button type="default" @click="closeNodeDetail">{{ tx('取消') }}</m-button>
+          <m-button type="primary" @click="saveNodeDetail">{{ tx('保存节点详情') }}</m-button>
         </footer>
       </section>
     </section>
 
-    <m-modal v-model:visible="createWorkflowVisible" title="新建工作流程" :width="920" :max-width="920">
+    <m-modal v-model:visible="createWorkflowVisible" :title="tx('新建工作流程')" :width="920" :max-width="920">
       <template #content>
         <div class="create-flow-form">
           <m-form :model="createWorkflowForm" label-position="left" label-width="96px">
-            <m-form-item label="流程名称" required>
-              <m-input v-model="createWorkflowForm.workflowName" :width="240" placeholder="请输入流程名称" />
+            <m-form-item :label="tx('流程名称')" required>
+              <m-input v-model="createWorkflowForm.workflowName" :width="240" :placeholder="tx('请输入流程名称')" />
             </m-form-item>
-            <m-form-item label="工作类型" required>
+            <m-form-item :label="tx('工作类型')" required>
               <m-select
                 v-model="createWorkflowForm.workTypeCode"
                 :options="toSelectOptions(workTypeOptions)"
                 style="width: 240px;"
-                placeholder="请选择工作类型"
+                :placeholder="tx('请选择工作类型')"
                 @change="changeCreateWorkflowWorkType"
               />
             </m-form-item>
-            <m-form-item label="适用条件">
+            <m-form-item :label="tx('适用条件')">
               <div class="condition-builder create-condition-builder">
                 <div v-if="createWorkflowForm.conditionRules.length === 0" class="condition-empty-state">
-                  <span>不配置适用条件时，该流程作为默认流程。</span>
-                  <m-button type="link" size="small" @click="addConditionRuleAfter(-1, createWorkflowForm, false)">添加条件</m-button>
+                  <span>{{ tx('不配置适用条件时，该流程作为默认流程。') }}</span>
+                  <m-button type="link" size="small" @click="addConditionRuleAfter(-1, createWorkflowForm, false)">{{ tx('添加条件') }}</m-button>
                 </div>
                 <div v-for="(rule, index) in createWorkflowForm.conditionRules" :key="rule.id" class="create-condition-rule">
                   <m-select
@@ -918,16 +918,16 @@
                     :options="toSelectOptions(relationOptions)"
                     class="condition-relation-select"
                     style="width: 64px;"
-                    placeholder="关系"
+                    :placeholder="tx('关系')"
                     @change="changeConditionValue(rule, createWorkflowForm, false)"
                   />
-                  <span v-else class="condition-relation-placeholder">当</span>
+                  <span v-else class="condition-relation-placeholder">{{ tx('当') }}</span>
                   <m-select
                     v-model="rule.field"
                     :options="toSelectOptions(conditionFieldOptionsFor(createWorkflowForm))"
                     class="condition-field-select"
                     style="width: 148px;"
-                    placeholder="条件主体"
+                    :placeholder="tx('条件主体')"
                     @change="changeConditionField(rule, createWorkflowForm, false)"
                   />
                   <m-select
@@ -935,7 +935,7 @@
                     :options="toSelectOptions(conditionOperatorOptions)"
                     class="condition-operator-select"
                     style="width: 96px;"
-                    placeholder="运算符"
+                    :placeholder="tx('运算符')"
                     @change="changeConditionValue(rule, createWorkflowForm, false)"
                   />
                   <m-select
@@ -944,17 +944,17 @@
                     :options="toSelectOptions(conditionValueOptions(rule.field, createWorkflowForm))"
                     class="condition-value-select"
                     style="width: 100%;"
-                    placeholder="条件值"
+                    :placeholder="tx('条件值')"
                     multiple
                     has-confirm
                     has-check-all
                     mode="multiple"
                     @change="changeConditionValue(rule, createWorkflowForm, false)"
                   />
-                  <m-input v-else v-model="rule.value" class="condition-value-input" :width="'100%'" placeholder="请输入条件值" @update:model-value="changeConditionValue(rule, createWorkflowForm, false)" />
+                  <m-input v-else v-model="rule.value" class="condition-value-input" :width="'100%'" :placeholder="tx('请输入条件值')" @update:model-value="changeConditionValue(rule, createWorkflowForm, false)" />
                   <div class="create-condition-actions">
-                    <m-button type="link" size="small" @click="addConditionRuleAfter(index, createWorkflowForm, false)">添加条件</m-button>
-                    <m-button type="link" size="small" @click="removeConditionRule(index, createWorkflowForm, false)">删除</m-button>
+                    <m-button type="link" size="small" @click="addConditionRuleAfter(index, createWorkflowForm, false)">{{ tx('添加条件') }}</m-button>
+                    <m-button type="link" size="small" @click="removeConditionRule(index, createWorkflowForm, false)">{{ tx('删除') }}</m-button>
                   </div>
                 </div>
               </div>
@@ -963,21 +963,21 @@
         </div>
       </template>
       <template #footer>
-        <m-button type="default" @click="createWorkflowVisible = false">取消</m-button>
-        <m-button type="primary" @click="confirmCreateWorkflow">创建流程</m-button>
+        <m-button type="default" @click="createWorkflowVisible = false">{{ tx('取消') }}</m-button>
+        <m-button type="primary" @click="confirmCreateWorkflow">{{ tx('创建流程') }}</m-button>
       </template>
     </m-modal>
 
-    <m-modal v-model:visible="deleteWorkflowVisible" title="删除工作流程" :width="420" :max-width="420">
+    <m-modal v-model:visible="deleteWorkflowVisible" :title="tx('删除工作流程')" :width="420" :max-width="420">
       <template #content>
         <div class="delete-flow-confirm">
           <strong>{{ workflowPendingDelete?.workflowName }}</strong>
-          <p>删除后该流程会从当前配置列表移除，流程图与右侧配置将切换到相邻流程。</p>
+          <p>{{ tx('删除后该流程会从当前配置列表移除，流程图与右侧配置将切换到相邻流程。') }}</p>
         </div>
       </template>
       <template #footer>
-        <m-button type="default" @click="cancelDeleteWorkflow">取消</m-button>
-        <m-button type="primary" @click="confirmDeleteWorkflow">确认删除</m-button>
+        <m-button type="default" @click="cancelDeleteWorkflow">{{ tx('取消') }}</m-button>
+        <m-button type="primary" @click="confirmDeleteWorkflow">{{ tx('确认删除') }}</m-button>
       </template>
     </m-modal>
 
@@ -986,16 +986,16 @@
         <div class="validation-modal">
           <section class="validation-summary-card" :class="{ 'validation-summary-card--pass': validationIssues.length === 0 }">
             <div>
-              <strong>{{ validationIssues.length === 0 ? '流程校验通过' : `发现 ${validationIssues.length} 项需要处理` }}</strong>
+              <strong>{{ validationIssues.length === 0 ? tx('流程校验通过') : tx('发现 {count} 项需要处理', { count: validationIssues.length }) }}</strong>
               <span>{{ selectedWorkflow.workflowName }} · {{ validationCheckedAt }}</span>
             </div>
             <m-tag :type="validationIssues.length === 0 ? 'completed' : 'rejected'">
-              {{ validationIssues.length === 0 ? '通过' : '未通过' }}
+              {{ validationIssues.length === 0 ? tx('通过') : tx('未通过') }}
             </m-tag>
           </section>
 
           <div v-if="validationIssues.length === 0" class="validation-pass-state">
-            当前流程的基础信息、节点连通性、路由、执行人、审批节点和系统节点均未发现阻断项。
+            {{ tx('当前流程的基础信息、节点连通性、路由、执行人、审批节点和系统节点均未发现阻断项。') }}
           </div>
 
           <div v-else class="validation-issue-list">
@@ -1007,27 +1007,27 @@
             >
               <header class="validation-issue-head">
                 <div>
-                  <strong>{{ issue.title }}</strong>
-                  <span>{{ issue.location }}</span>
+                  <strong>{{ tx(issue.title) }}</strong>
+                  <span>{{ tx(issue.location) }}</span>
                 </div>
                 <m-tag :type="validationIssueTagType(issue)">{{ validationIssueSeverityLabel(issue) }}</m-tag>
               </header>
-              <p>{{ issue.description }}</p>
+              <p>{{ tx(issue.description) }}</p>
               <footer>
-                <m-button type="link" size="small" @click="locateValidationIssue(issue)">前往修改</m-button>
+                <m-button type="link" size="small" @click="locateValidationIssue(issue)">{{ tx('前往修改') }}</m-button>
               </footer>
             </article>
           </div>
         </div>
       </template>
       <template #footer>
-        <m-button type="default" @click="validationVisible = false">关闭</m-button>
-        <m-button v-if="validationIssues.length > 0" type="primary" @click="locateValidationIssue(validationIssues[0])">处理第一项</m-button>
+        <m-button type="default" @click="validationVisible = false">{{ tx('关闭') }}</m-button>
+        <m-button v-if="validationIssues.length > 0" type="primary" @click="locateValidationIssue(validationIssues[0])">{{ tx('处理第一项') }}</m-button>
       </template>
     </m-modal>
 
     <transition name="workflow-toast-fade">
-      <div v-if="toastVisible" class="workflow-toast">{{ toastMessage }}</div>
+      <div v-if="toastVisible" class="workflow-toast">{{ tx(toastMessage) }}</div>
     </transition>
   </main>
 </template>
@@ -1035,12 +1035,14 @@
 <script setup>
 import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
 import { fetchSharedConfig, saveSharedConfig } from '../utils/sharedConfigApi'
+import { useLocale } from '../i18n'
 import {
   loadSharedWorkClassifications,
   workClassificationOptions,
   workTypeOptions
 } from '../utils/workClassifications'
 
+const { isEnglish, tx, localizeOptions } = useLocale()
 const classificationOptions = reactive(workClassificationOptions())
 
 function refreshClassificationOptions() {
@@ -2701,7 +2703,7 @@ const statusRuleNodeOptions = computed(() => (selectedWorkflow.value?.nodes || [
   })))
 
 const validationModalTitle = computed(() => (
-  validationIssues.value.length === 0 ? '流程校验结果' : '流程校验未通过项'
+  validationIssues.value.length === 0 ? tx('流程校验结果') : tx('流程校验未通过项')
 ))
 
 const stageTargetOptions = computed(() => selectedWorkflow.value.stageStrategies.map(item => ({
@@ -4485,7 +4487,7 @@ function isUnconditionalRoute(route) {
 }
 
 function formatValidationTime() {
-  return new Date().toLocaleTimeString('zh-CN', { hour12: false })
+  return new Date().toLocaleTimeString(isEnglish.value ? 'en-US' : 'zh-CN', { hour12: false })
 }
 
 function validationIssueTagType(issue) {
@@ -4493,7 +4495,7 @@ function validationIssueTagType(issue) {
 }
 
 function validationIssueSeverityLabel(issue) {
-  return issue.severity === 'warning' ? '提醒' : '阻断'
+  return issue.severity === 'warning' ? tx('提醒') : tx('阻断')
 }
 
 function locateValidationIssue(issue) {
@@ -4635,7 +4637,9 @@ function publishSelectedWorkflows() {
     canvasNotice.value = '请先在左侧工作流程列表勾选需要发布的草稿流程。'
     return
   }
-  saveMessage.value = `已提交 ${selected.length} 个草稿流程发布。当前页面仍保留草稿配置，发布后的正式流程请在发布版本页面查看。`
+  saveMessage.value = tx('已提交 {count} 个草稿流程发布。当前页面仍保留草稿配置，发布后的正式流程请在发布版本页面查看。', {
+    count: selected.length
+  })
   selected.forEach(item => {
     item.publishChecked = 'uncheck'
     item.lastPublishAction = 'submitted'
@@ -5397,7 +5401,7 @@ function stageTemplateLabel(value) {
     repairExecution: '维修执行',
     execute: '执行处理'
   }
-  return map[value] || value
+  return tx(map[value] || value)
 }
 
 function generatedRouteLabel(source, target) {
@@ -5773,7 +5777,7 @@ function workflowClassificationValues(workflow) {
 }
 
 function conditionFieldLabel(value) {
-  return [...conditionFieldOptions, inspectionPlanConditionFieldOption].find(item => item.value === value)?.label || value
+  return tx([...conditionFieldOptions, inspectionPlanConditionFieldOption].find(item => item.value === value)?.label || value)
 }
 
 function conditionOperatorLabel(value) {
@@ -5786,21 +5790,21 @@ function conditionOperatorLabel(value) {
     lt: '<',
     lte: '<='
   }
-  return operatorMap[value] || value
+  return tx(operatorMap[value] || value)
 }
 
 function conditionValueLabel(field, value) {
   if (Array.isArray(value)) {
-    if (value.length === 0) return '未选择'
+    if (value.length === 0) return tx('未选择')
     return value
-      .map(item => conditionValueOptions(field).find(option => option.value === item)?.label || item)
-      .join(' 或 ')
+      .map(item => tx(conditionValueOptions(field).find(option => option.value === item)?.label || item))
+      .join(` ${tx('或')} `)
   }
-  return conditionValueOptions(field).find(item => item.value === value)?.label || value
+  return tx(conditionValueOptions(field).find(item => item.value === value)?.label || value)
 }
 
 function relationLabel(value) {
-  return value === 'OR' ? '或' : '且'
+  return value === 'OR' ? tx('或') : tx('且')
 }
 
 function createEmptyNodeDetail() {
@@ -5997,12 +6001,12 @@ function defaultActionPolicyApprovalFlows(policies = {}, workTypeCode = 'repair'
 function actionPolicySummary(policies) {
   const selected = actionPolicyOptions
     .filter(item => policies?.[item.value] === 'checked')
-    .map(item => item.label)
-  return selected.length > 0 ? selected.join('、') : '未开放额外操作能力'
+    .map(item => tx(item.label))
+  return selected.length > 0 ? selected.join(isEnglish.value ? ', ' : '、') : tx('未开放额外操作能力')
 }
 
 function actionPolicyLabel(value) {
-  return actionPolicyOptions.find(item => item.value === value)?.label || value
+  return tx(actionPolicyOptions.find(item => item.value === value)?.label || value)
 }
 
 function isExecutorConfigVisible(nodeLike) {
@@ -6391,7 +6395,7 @@ function normalizedRouteSourceStatus(route, nodes = [], sourceOverride = null) {
 }
 
 function routeStatusLabel(value) {
-  return routeStatusOptions.find(item => item.value === value)?.label || value || '完成'
+  return tx(routeStatusOptions.find(item => item.value === value)?.label || value || '完成')
 }
 
 function outputResultLabel(nodeLike, value) {
@@ -6976,7 +6980,7 @@ function systemActionByWorkType(value) {
 }
 
 function dispatchMethodLabel(value) {
-  return dispatchMethodOptions.find(item => item.value === value)?.label || value
+  return tx(dispatchMethodOptions.find(item => item.value === value)?.label || value)
 }
 
 function approvalFlowLabel(value) {
@@ -6984,45 +6988,47 @@ function approvalFlowLabel(value) {
 }
 
 function rejectPolicyLabel(value) {
-  return rejectPolicyOptions.find(item => item.value === value)?.label || value
+  return tx(rejectPolicyOptions.find(item => item.value === value)?.label || value)
 }
 
 function systemActionLabel(value) {
-  return systemActionOptions.find(item => item.value === value)?.label || value
+  return tx(systemActionOptions.find(item => item.value === value)?.label || value)
 }
 
 function assignmentTargetLabel(stage) {
   const source = stage.assignmentTargetType === 'person' ? assignmentPersonOptions : assignmentRoleOptions
-  return source.find(item => item.value === stage.assignmentTarget)?.label || '未指定分配人'
+  return tx(source.find(item => item.value === stage.assignmentTarget)?.label || '未指定分配人')
 }
 
 function executorSourceSummary(source, roleValue, personValue) {
   if (source === 'manualSelect') {
-    return assignmentPersonOptions.find(item => item.value === personValue)?.label || '指定人员'
+    return assignmentPersonOptions.find(item => item.value === personValue)?.label || tx('指定人员')
   }
   if (source === 'fixedRole') {
-    return assignmentRoleOptions.find(item => item.value === roleValue)?.label || '指定岗位'
+    return assignmentRoleOptions.find(item => item.value === roleValue)?.label || tx('指定岗位')
   }
-  if (source === 'creator') return '创建人'
-  if (source === 'specifiedNodeExecutor') return '指定节点执行人'
-  return '排程结果'
+  if (source === 'creator') return tx('创建人')
+  if (source === 'specifiedNodeExecutor') return tx('指定节点执行人')
+  return tx('排程结果')
 }
 
 function flowNodeExecutorText(nodeLike) {
   if (!['workStage', 'dispatchFlow'].includes(nodeLike?.nodeType)) return ''
-  if (nodeLike.assignmentEnabledSwitch === 'checked' && nodeLike.nodeType !== 'dispatchFlow') return '继承排程结果'
+  if (nodeLike.assignmentEnabledSwitch === 'checked' && nodeLike.nodeType !== 'dispatchFlow') return tx('继承排程结果')
 
   const source = normalizeExecutorSourceForNode(nodeLike)
-  if (source === 'creator') return '创建人'
-  if (source === 'inheritDispatch') return '继承排程结果'
+  if (source === 'creator') return tx('创建人')
+  if (source === 'inheritDispatch') return tx('继承排程结果')
   if (source === 'specifiedNodeExecutor') {
-    return nodeLike.executorSourceNodeCode ? `${nodeName(nodeLike.executorSourceNodeCode)}执行人` : '指定节点执行人'
+    return nodeLike.executorSourceNodeCode
+      ? tx('{name}执行人', { name: nodeName(nodeLike.executorSourceNodeCode) })
+      : tx('指定节点执行人')
   }
   if (source === 'fixedRole') {
-    return assignmentRoleOptions.find(item => item.value === nodeLike.fallbackExecutor)?.label || '指定岗位'
+    return assignmentRoleOptions.find(item => item.value === nodeLike.fallbackExecutor)?.label || tx('指定岗位')
   }
   if (source === 'manualSelect') {
-    return assignmentPersonOptions.find(item => item.value === nodeLike.executorPerson)?.label || '指定人员'
+    return assignmentPersonOptions.find(item => item.value === nodeLike.executorPerson)?.label || tx('指定人员')
   }
   return executorSourceSummary(source, nodeLike.fallbackExecutor, nodeLike.executorPerson)
 }
@@ -7033,17 +7039,17 @@ function systemNodePositionText(config) {
 }
 
 function actionTimingLabel(value) {
-  return actionTimingOptions.find(item => item.value === value)?.label || value
+  return tx(actionTimingOptions.find(item => item.value === value)?.label || value)
 }
 
 function actionFailureLabel(value) {
-  return actionFailureOptions.find(item => item.value === value)?.label || value
+  return tx(actionFailureOptions.find(item => item.value === value)?.label || value)
 }
 
 function toSelectOptions(options) {
   return options.map(item => ({
     id: item.value,
-    name: item.label,
+    name: tx(item.label),
     disabled: item.disabled
   }))
 }
@@ -7262,11 +7268,11 @@ function nodeName(code) {
 }
 
 function nodeTypeLabel(value) {
-  return nodeTypeOptions.find(item => item.value === value)?.label || value
+  return tx(nodeTypeOptions.find(item => item.value === value)?.label || value)
 }
 
 function workTypeLabel(value) {
-  return workTypeOptions.find(item => item.value === value)?.label || value
+  return tx(workTypeOptions.find(item => item.value === value)?.label || value)
 }
 
 function classificationLabel(value) {

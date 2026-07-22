@@ -2,14 +2,14 @@
   <main class="classification-page">
     <section class="classification-title-row">
       <div>
-        <h2 class="page-title">工作单据配置</h2>
+        <h2 class="page-title">{{ t('classification.title') }}</h2>
         <p class="classification-subtitle">{{ currentSubtitle }}</p>
         <p v-if="saveError" class="classification-sync-warning">{{ saveError }}</p>
       </div>
       <div class="classification-actions">
-        <m-search v-model="keyword" :width="240" placeholder="搜索工作分类" />
-        <m-button type="default" @click="resetClassifications">恢复分类样例</m-button>
-        <m-button type="primary" @click="openCreate()">新增分类</m-button>
+        <m-search v-model="keyword" :width="240" :placeholder="t('classification.searchPlaceholder')" />
+        <m-button type="default" @click="resetClassifications">{{ t('classification.restoreSamples') }}</m-button>
+        <m-button type="primary" @click="openCreate()">{{ t('classification.create') }}</m-button>
       </div>
     </section>
 
@@ -18,45 +18,45 @@
         <header class="classification-type-head">
           <div>
             <strong>{{ type.label }}</strong>
-            <span>{{ type.children.length }} 个分类</span>
+            <span>{{ t('classification.count', { count: type.children.length }) }}</span>
           </div>
-          <m-button type="link" size="small" @click="openCreate(type.value)">新增</m-button>
+          <m-button type="link" size="small" @click="openCreate(type.value)">{{ t('classification.add') }}</m-button>
         </header>
 
         <div v-if="type.children.length > 0" class="classification-node-list">
           <div v-for="item in type.children" :key="item.id" class="classification-node">
             <span>{{ item.classificationName }}</span>
             <div class="classification-node-actions">
-              <m-button type="link" size="small" @click="openEdit(item)">编辑</m-button>
+              <m-button type="link" size="small" @click="openEdit(item)">{{ t('classification.edit') }}</m-button>
               <m-popconfirm
-                :content="`确定删除「${item.classificationName}」？`"
+                :content="t('classification.deleteConfirm', { name: item.classificationName })"
                 status="danger"
                 @confirm="deleteClassification(item)"
               >
-                <m-button type="link" size="small">删除</m-button>
+                <m-button type="link" size="small">{{ t('classification.delete') }}</m-button>
               </m-popconfirm>
             </div>
           </div>
         </div>
 
-        <div v-else class="classification-empty-node">暂无工作分类</div>
+        <div v-else class="classification-empty-node">{{ t('classification.empty') }}</div>
       </article>
     </section>
 
-    <m-modal v-model:visible="editorVisible" :title="editorMode === 'create' ? '新增工作分类' : '编辑工作分类'">
+    <m-modal v-model:visible="editorVisible" :title="editorMode === 'create' ? t('classification.createTitle') : t('classification.editTitle')">
       <template #content>
-        <m-form :model="editorForm" label-position="left" label-width="112px">
-          <m-form-item label="基础工作类型" required>
-            <m-select v-model="editorForm.workTypeCode" :options="toSelectOptions(workTypeOptions)" style="width: 240px;" placeholder="请选择" />
+        <m-form :model="editorForm" label-position="left" :label-width="formLabelWidth">
+          <m-form-item :label="t('classification.workTypeLabel')" required>
+            <m-select v-model="editorForm.workTypeCode" :options="toSelectOptions(localizedWorkTypeOptions)" style="width: 240px;" :placeholder="t('classification.selectPlaceholder')" />
           </m-form-item>
-          <m-form-item label="工作分类名称" required>
-            <m-input v-model="editorForm.classificationName" :width="240" placeholder="请输入" />
+          <m-form-item :label="t('classification.nameLabel')" required>
+            <m-input v-model="editorForm.classificationName" :width="240" :placeholder="t('classification.inputPlaceholder')" />
           </m-form-item>
         </m-form>
       </template>
       <template #footer>
-        <m-button type="default" @click="editorVisible = false">取消</m-button>
-        <m-button type="primary" @click="saveClassification">保存</m-button>
+        <m-button type="default" @click="editorVisible = false">{{ t('classification.cancel') }}</m-button>
+        <m-button type="primary" @click="saveClassification">{{ t('classification.save') }}</m-button>
       </template>
     </m-modal>
 
@@ -74,12 +74,14 @@ import {
   saveWorkClassifications,
   workTypeOptions
 } from '../utils/workClassifications'
+import { useLocale } from '../i18n'
 
+const { isEnglish, t } = useLocale()
 const classifications = ref(loadClassifications())
 const keyword = ref('')
 const editorVisible = ref(false)
 const editorMode = ref('create')
-const saveError = ref('')
+const syncErrorKey = ref('')
 const editorForm = reactive({
   id: '',
   classificationCode: '',
@@ -87,16 +89,23 @@ const editorForm = reactive({
   classificationName: ''
 })
 
-const currentSubtitle = computed(() => '按基础工作类型维护项目工作分类，分类影响流程、页面和统计口径。')
+const currentSubtitle = computed(() => t('classification.subtitle'))
+const saveError = computed(() => syncErrorKey.value ? t(syncErrorKey.value) : '')
+const formLabelWidth = computed(() => isEnglish.value ? '160px' : '112px')
+const localizedWorkTypeOptions = computed(() => workTypeOptions.map(type => ({
+  ...type,
+  label: t(`workTypes.${type.value}`)
+})))
 
 onMounted(async () => {
   const result = await loadSharedWorkClassifications()
   classifications.value = result.data
-  saveError.value = result.ok ? '' : '共享配置服务暂不可用，当前使用本地缓存。'
+  syncErrorKey.value = result.ok ? '' : 'classification.loadFallback'
 })
 
 const treeData = computed(() => workTypeOptions.map(type => ({
   ...type,
+  label: t(`workTypes.${type.value}`),
   children: classifications.value.filter(item => {
     const matchType = item.workTypeCode === type.value
     const matchKeyword = !keyword.value || item.classificationName.includes(keyword.value)
@@ -155,7 +164,7 @@ function loadClassifications() {
 async function saveClassifications() {
   saveWorkClassifications(classifications.value)
   const result = await saveSharedWorkClassifications(classifications.value)
-  saveError.value = result.ok ? '' : '共享配置保存失败，已保存到当前浏览器本地。'
+  syncErrorKey.value = result.ok ? '' : 'classification.saveFallback'
 }
 
 function toSelectOptions(options) {
